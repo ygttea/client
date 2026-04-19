@@ -33,7 +33,6 @@
             cursor: crosshair;
         }
 
-        /* Arka Plan Yağmur & Blur Efekti */
         #bg-canvas {
             position: fixed; inset: 0; z-index: -1;
             background: radial-gradient(circle at center, #0f0f0f 0%, #050505 100%);
@@ -48,11 +47,11 @@
 
         @keyframes fall { to { transform: translateY(110vh); } }
 
-        /* Giriş Paneli - Müzik İçin Şart */
         #entry-overlay {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
         }
 
         #entry-overlay.fade-out {
@@ -66,7 +65,6 @@
 
         @keyframes pulse { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
 
-        /* Ana Profil Kartı */
         .main-container {
             opacity: 0; transform: scale(0.9);
             transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
@@ -87,7 +85,33 @@
             position: relative;
         }
 
-        /* Profil Fotoğrafı (Glitch Efektli) */
+        /* Müzik Player Tıklanabilir */
+        .music-player {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 15px 30px;
+            margin-bottom: 35px;
+            display: flex; align-items: center; gap: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .music-player:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .music-icon {
+            font-size: 24px; color: var(--accent);
+        }
+
+        .spinning {
+            animation: spin 5s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         .avatar-wrapper {
             position: relative; width: 150px; height: 150px; margin: 0 auto 30px;
         }
@@ -95,24 +119,15 @@
         .avatar-wrapper img {
             width: 100%; height: 100%; border-radius: 50%;
             border: 2px solid rgba(255,255,255,0.1);
-            object-fit: cover; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            object-fit: cover; transition: 0.5s;
         }
 
-        .avatar-wrapper:hover img {
-            transform: scale(1.08) rotate(3deg);
-            border-color: var(--accent);
-            box-shadow: 0 0 40px rgba(59, 130, 246, 0.4);
-        }
-
-        /* Kullanıcı Adı (Glow Efekti) */
         .username-glitch {
             font-size: 42px; font-weight: 800; letter-spacing: -2px;
             background: linear-gradient(180deg, #fff 0%, #666 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(255,255,255,0.3));
         }
 
-        /* Badge Sistemi - Birebir rip.tf */
         .badge-container {
             display: flex; justify-content: center; gap: 14px; margin: 25px 0;
         }
@@ -123,35 +138,11 @@
             border-radius: 14px;
             width: 45px; height: 45px;
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .badge:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-5px);
+            transition: 0.3s;
         }
 
         .badge img { width: 26px; height: 26px; }
 
-        /* Müzik Widget (Modern) */
-        .music-player {
-            background: rgba(255, 255, 255, 0.01);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 15px 30px;
-            margin-bottom: 35px;
-            display: flex; align-items: center; gap: 20px;
-        }
-
-        .music-icon {
-            font-size: 24px; color: var(--accent);
-            animation: spin 5s linear infinite;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Sayaç */
         .stats {
             position: absolute; top: 30px; right: 40px;
             font-size: 10px; color: rgba(255,255,255,0.2);
@@ -167,11 +158,7 @@
             transition: 0.4s;
         }
 
-        .social-link:hover {
-            color: #fff; transform: scale(1.3);
-            filter: drop-shadow(0 0 10px #fff);
-        }
-
+        .social-link:hover { color: #fff; transform: scale(1.2); }
     </style>
 </head>
 <body>
@@ -186,10 +173,10 @@
         <div class="glass-card">
             <div class="stats">VIEWS: <span id="viewCount">0</span></div>
 
-            <div class="music-player">
-                <i class="fa-solid fa-compact-disc music-icon"></i>
+            <div class="music-player" onclick="toggleMusic()">
+                <i class="fa-solid fa-compact-disc music-icon spinning" id="musicIcon"></i>
                 <div class="text-left">
-                    <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-1">Now playing</p>
+                    <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-1" id="statusText">Now playing</p>
                     <p class="text-sm font-bold tracking-tight">Inna - Amazing</p>
                 </div>
             </div>
@@ -220,7 +207,10 @@
     <audio id="audioTrack" src="https://cdn.discordapp.com/attachments/1482738905089441793/1495408359720095966/inna.mp3?ex=69e62310&is=69e4d190&hm=15fce5bb959fee617580cb7679f23fa87f7a6d666d80c9cb52ff0c411188d56d&" loop></audio>
 
     <script>
-        // Detaylı Yağmur Scripti
+        const audio = document.getElementById('audioTrack');
+        const musicIcon = document.getElementById('musicIcon');
+        const statusText = document.getElementById('statusText');
+
         function createRain() {
             const canvas = document.getElementById('bg-canvas');
             for(let i=0; i<100; i++) {
@@ -236,19 +226,31 @@
         }
         createRain();
 
-        // Siteyi Başlatma Fonksiyonu
         function launch() {
-            const audio = document.getElementById('audioTrack');
             audio.volume = 0.5;
             audio.play().catch(e => console.log("Müzik hatası:", e));
-
             document.getElementById('entry-overlay').classList.add('fade-out');
             document.getElementById('mainCard').classList.add('show');
-            
             animateCounter();
         }
 
-        // Sahte Görüntülenme Sayacı
+        // MÜZİK DURDURMA / BAŞLATMA
+        function toggleMusic() {
+            if (audio.paused) {
+                audio.play();
+                musicIcon.classList.add('spinning');
+                musicIcon.classList.replace('fa-circle-play', 'fa-compact-disc');
+                statusText.innerText = "Now playing";
+                statusText.style.color = "#6b7280"; // Gray-500
+            } else {
+                audio.pause();
+                musicIcon.classList.remove('spinning');
+                musicIcon.classList.replace('fa-compact-disc', 'fa-circle-play');
+                statusText.innerText = "Paused";
+                statusText.style.color = "#ef4444"; // Red-500
+            }
+        }
+
         function animateCounter() {
             let target = 732; 
             let current = 0;
@@ -263,12 +265,7 @@
             step();
         }
 
-        // Sağ tık ve bazı kısayolları engelle
         document.addEventListener('contextmenu', e => e.preventDefault());
-        document.onkeydown = function(e) {
-            if(e.keyCode == 123) return false; // F12
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
-        };
     </script>
 </body>
 </html>
