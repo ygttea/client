@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>linux | @profile</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -27,7 +27,7 @@
             cursor: crosshair;
         }
 
-        /* Arka Plan Yağmur Efekti */
+        /* Arka Plan Yağmur Efekti (Burayı kalabalık tuttum) */
         #bg-canvas {
             position: fixed; inset: 0; z-index: -1;
             background: radial-gradient(circle at center, #0f0f0f 0%, #050505 100%);
@@ -42,7 +42,7 @@
 
         @keyframes fall { to { transform: translateY(110vh); } }
 
-        /* Giriş Paneli (Tıklamazsan ananın amı gibi sessiz kalır site) */
+        /* Giriş Paneli */
         #entry-overlay {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -59,29 +59,32 @@
 
         @keyframes pulse { 0%, 100% { opacity: 0.2; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1); } }
 
-        /* Spotify Menüsü (O istediğin şekilli şukullu yer) */
+        /* Spotify Full Menü */
         #spotify-menu {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 5, 0.98); border-radius: 35px;
+            background: rgba(5, 5, 5, 0.98); border-radius: 40px;
             z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center;
             opacity: 0; pointer-events: none; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid var(--spotify);
+            padding: 40px;
         }
 
         #spotify-menu.active { opacity: 1; pointer-events: all; }
 
         .spotify-album {
-            width: 190px; height: 190px; border-radius: 20px;
+            width: 200px; height: 200px; border-radius: 15px;
             margin-bottom: 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.8);
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .spotify-controls { display: flex; items: center; gap: 35px; margin-top: 25px; }
-        .spotify-btn { color: #b3b3b3; transition: 0.3s; cursor: pointer; }
-        .spotify-btn:hover { color: white; transform: scale(1.1); }
-        .play-pause { font-size: 55px; color: white; }
+        /* Spotify Slider Tasarımı amk */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #333; border-radius: 2px; }
+        input[type=range]::-webkit-slider-thumb { height: 12px; width: 12px; border-radius: 50%; background: #fff; cursor: pointer; -webkit-appearance: none; margin-top: -4px; }
+        input[type=range]:hover::-webkit-slider-thumb { background: var(--spotify); transform: scale(1.2); }
 
-        /* Ana Kart Yapısı */
+        /* Ana Kart */
         .main-container {
             opacity: 0; transform: scale(0.85);
             transition: all 1.3s cubic-bezier(0.19, 1, 0.22, 1);
@@ -91,32 +94,38 @@
 
         .glass-card {
             background: var(--glass);
-            backdrop-filter: blur(30px) saturate(220%);
-            -webkit-backdrop-filter: blur(30px) saturate(220%);
+            backdrop-filter: blur(35px) saturate(220%);
+            -webkit-backdrop-filter: blur(35px) saturate(220%);
             border: 1px solid var(--border);
-            border-radius: 40px; padding: 70px 50px;
-            width: 500px; text-align: center;
+            border-radius: 45px; padding: 70px 50px;
+            width: 520px; text-align: center;
             box-shadow: 0 0 120px rgba(0, 0, 0, 0.7);
             position: relative;
         }
 
-        /* Profil Detayları */
-        .avatar-wrapper { position: relative; width: 160px; height: 160px; margin: 0 auto 35px; }
-        .avatar-wrapper img {
-            width: 100%; height: 100%; border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.05);
-            object-fit: cover; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .mini-player {
+            background: rgba(255, 255, 255, 0.015); border: 1px solid var(--border);
+            border-radius: 25px; padding: 20px 30px; margin-bottom: 40px;
+            display: flex; align-items: center; gap: 20px; cursor: pointer; transition: 0.3s;
         }
-        .avatar-wrapper:hover img { transform: scale(1.1) rotate(-3deg); border-color: var(--accent); }
+        .mini-player:hover { background: rgba(29, 185, 84, 0.08); border-color: var(--spotify); }
+        
+        .spinning { animation: spin 4s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .avatar-wrapper img {
+            width: 160px; height: 160px; border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.05);
+            object-fit: cover; margin: 0 auto 35px; transition: 0.5s;
+        }
+        .avatar-wrapper:hover img { transform: scale(1.1); border-color: var(--spotify); }
 
         .username {
-            font-size: 46px; font-weight: 900; letter-spacing: -3px;
+            font-size: 48px; font-weight: 900; letter-spacing: -3px;
             background: linear-gradient(180deg, #fff 20%, #444 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));
         }
 
-        /* Badge Sistemi */
         .badge-list { display: flex; justify-content: center; gap: 15px; margin: 30px 0; }
         .badge-box {
             background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border);
@@ -124,37 +133,17 @@
             display: flex; align-items: center; justify-content: center;
             transition: 0.4s;
         }
-        .badge-box:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-7px); border-color: white; }
-        .badge-box img { width: 26px; height: 26px; }
+        .badge-box:hover { transform: translateY(-5px); border-color: white; }
 
-        /* Müzik Widget */
-        .mini-player {
-            background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border);
-            border-radius: 25px; padding: 18px 30px; margin-bottom: 40px;
-            display: flex; align-items: center; gap: 20px; cursor: pointer; transition: 0.3s;
-        }
-        .mini-player:hover { background: rgba(29, 185, 84, 0.08); border-color: var(--spotify); }
-        
-        .disc { font-size: 26px; color: var(--spotify); }
-        .spinning { animation: spin 4s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .view-count {
-            position: absolute; top: 35px; right: 45px;
-            font-size: 11px; color: rgba(255,255,255,0.2);
-            letter-spacing: 4px; font-weight: bold;
-        }
-
-        .social-row { display: flex; justify-content: center; gap: 35px; margin-top: 45px; }
-        .social-icon { font-size: 24px; color: rgba(255,255,255,0.3); transition: 0.5s; }
-        .social-icon:hover { color: white; transform: translateY(-5px); filter: drop-shadow(0 0 15px white); }
+        .social-icon { font-size: 24px; color: rgba(255,255,255,0.3); transition: 0.4s; }
+        .social-icon:hover { color: white; transform: scale(1.2); }
 
     </style>
 </head>
 <body>
 
     <div id="entry-overlay" onclick="startSystem()">
-        <div class="entry-text">[ ACCESS DENIED - CLICK TO BYPASS ]</div>
+        <div class="entry-text">[ CLICK TO UNLOCK SYSTEM ]</div>
     </div>
 
     <div id="bg-canvas"></div>
@@ -163,32 +152,43 @@
         <div class="glass-card">
             
             <div id="spotify-menu">
-                <div class="absolute top-8 right-10 cursor-pointer text-3xl text-gray-600 hover:text-white" onclick="toggleSpotify()">×</div>
-                <img src="https://client-gold-nu-77.vercel.app/5d680e3ff33e58ef19d6dfd1041119c8.png" class="spotify-album" id="menuAlbum">
+                <div class="absolute top-8 right-10 cursor-pointer text-4xl text-gray-600 hover:text-white transition" onclick="toggleSpotify()">×</div>
+                
+                <img src="https://client-gold-nu-77.vercel.app/5d680e3ff33e58ef19d6dfd1041119c8.png" class="spotify-album">
+                
                 <h2 class="text-2xl font-black mb-1">Inna - Amazing</h2>
-                <p class="text-green-500 font-bold text-xs tracking-[4px]">PLAYING FROM VERCEL</p>
+                <p class="text-green-500 font-bold text-xs tracking-[5px] mb-8">VERCEL PLAYER PRO</p>
                 
-                <div class="spotify-controls">
-                    <i class="fa-solid fa-shuffle spotify-btn text-sm"></i>
-                    <i class="fa-solid fa-backward-step spotify-btn text-2xl"></i>
-                    <i class="fa-solid fa-circle-pause spotify-btn play-pause" id="playBtn" onclick="togglePlay()"></i>
-                    <i class="fa-solid fa-forward-step spotify-btn text-2xl"></i>
-                    <i class="fa-solid fa-repeat spotify-btn text-sm"></i>
+                <div class="w-full max-w-[280px] mb-8">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-volume-off text-gray-500"></i>
+                        <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
+                        <i class="fa-solid fa-volume-high text-gray-500"></i>
+                    </div>
+                    <p class="text-[9px] text-gray-600 mt-2 tracking-widest uppercase">Volume Control</p>
                 </div>
-                
-                <div class="mt-10 w-64 h-1 bg-gray-800 rounded-full overflow-hidden">
-                    <div id="progress" class="h-full bg-green-500 w-0 transition-all duration-500"></div>
+
+                <div class="flex items-center gap-10 mb-8">
+                    <i class="fa-solid fa-backward-step text-2xl text-gray-400 hover:text-white cursor-pointer"></i>
+                    <i class="fa-solid fa-circle-pause text-6xl text-white hover:scale-110 transition cursor-pointer" id="playBtn" onclick="togglePlay()"></i>
+                    <i class="fa-solid fa-forward-step text-2xl text-gray-400 hover:text-white cursor-pointer"></i>
                 </div>
-                
-                <button class="mt-10 text-[10px] tracking-[5px] text-gray-500 hover:text-white transition" onclick="toggleSpotify()">BACK TO PROFILE</button>
+
+                <div class="w-full max-w-[320px]">
+                    <input type="range" id="progressControl" min="0" max="100" value="0">
+                    <div class="flex justify-between mt-2 text-[11px] font-bold text-gray-500">
+                        <span id="curTime">0:00</span>
+                        <span id="durTime">0:00</span>
+                    </div>
+                </div>
+
+                <button class="mt-10 text-[10px] tracking-[6px] text-gray-600 hover:text-green-500 transition font-bold" onclick="toggleSpotify()">RETURN TO BIO</button>
             </div>
 
-            <div class="view-count">VIEWS: <span id="count">0</span></div>
-
             <div class="mini-player" onclick="toggleSpotify()">
-                <i class="fa-solid fa-compact-disc disc spinning" id="mainDisc"></i>
+                <i class="fa-solid fa-compact-disc text-2xl text-green-500 spinning" id="mainDisc"></i>
                 <div class="text-left">
-                    <p class="text-[10px] text-green-500 font-black uppercase tracking-[2px]">Spotify Overlay</p>
+                    <p class="text-[10px] text-green-500 font-black uppercase tracking-[2px]">Spotify Control</p>
                     <p class="text-sm font-bold">Inna - Amazing</p>
                 </div>
             </div>
@@ -198,17 +198,17 @@
             </div>
 
             <h1 class="username">linux</h1>
-            <p class="text-[13px] text-blue-500 font-bold uppercase tracking-[6px] mt-3">Fullstack Dev</p>
+            <p class="text-[13px] text-blue-500 font-bold uppercase tracking-[6px] mt-4">Fullstack Developer</p>
 
             <div class="badge-list">
-                <div class="badge-box"><img src="owner.svg" title="Owner"></div>
-                <div class="badge-box"><img src="staff.svg" title="Staff"></div>
-                <div class="badge-box"><img src="verified.svg" title="Verified"></div>
-                <div class="badge-box"><img src="premium.svg" title="Premium"></div>
-                <div class="badge-box"><img src="early.svg" title="Early Supporter"></div>
+                <div class="badge-box"><img src="owner.svg"></div>
+                <div class="badge-box"><img src="staff.svg"></div>
+                <div class="badge-box"><img src="verified.svg"></div>
+                <div class="badge-box"><img src="premium.svg"></div>
+                <div class="badge-box"><img src="early.svg"></div>
             </div>
 
-            <div class="social-row">
+            <div class="flex justify-center gap-10 mt-10">
                 <a href="#" class="social-icon"><i class="fa-brands fa-discord"></i></a>
                 <a href="#" class="social-icon"><i class="fa-brands fa-github"></i></a>
                 <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
@@ -222,45 +222,40 @@
         const audio = document.getElementById('track');
         const playBtn = document.getElementById('playBtn');
         const mainDisc = document.getElementById('mainDisc');
-        const progress = document.getElementById('progress');
+        const volCtrl = document.getElementById('volumeControl');
+        const progCtrl = document.getElementById('progressControl');
+        const curTxt = document.getElementById('curTime');
+        const durTxt = document.getElementById('durTime');
 
-        // Yağmur
+        // Yağmur Döngüsü
         function createRain() {
             const canvas = document.getElementById('bg-canvas');
-            for(let i=0; i<120; i++) {
+            for(let i=0; i<150; i++) {
                 const drop = document.createElement('div');
                 drop.className = 'raindrop';
                 drop.style.left = Math.random() * 100 + 'vw';
-                drop.style.height = Math.random() * 70 + 50 + 'px';
-                drop.style.animationDuration = Math.random() * 0.5 + 0.3 + 's';
+                drop.style.height = Math.random() * 80 + 40 + 'px';
+                drop.style.animationDuration = Math.random() * 0.4 + 0.3 + 's';
                 drop.style.opacity = Math.random() * 0.2;
                 canvas.appendChild(drop);
             }
         }
         createRain();
 
-        // Başlat
+        // Sistem Başlat
         function startSystem() {
             audio.volume = 0.5;
             audio.play();
             document.getElementById('entry-overlay').classList.add('fade-out');
             document.getElementById('content').classList.add('show');
-            
-            // Sayaç
-            let target = 842; let curr = 0;
-            const timer = setInterval(() => {
-                if(curr >= target) clearInterval(timer);
-                curr += Math.ceil((target - curr) / 20 + 1);
-                document.getElementById('count').innerText = curr > target ? target : curr;
-            }, 40);
         }
 
-        // Spotify Toggle
+        // Spotify Menü Aç/Kapat
         function toggleSpotify() {
             document.getElementById('spotify-menu').classList.toggle('active');
         }
 
-        // Oynat/Durdur
+        // Oynat Durdur
         function togglePlay() {
             if (audio.paused) {
                 audio.play();
@@ -273,15 +268,33 @@
             }
         }
 
-        // Progress Bar
-        audio.ontimeupdate = function() {
-            let pc = (audio.currentTime / audio.duration) * 100;
-            progress.style.width = pc + "%";
-        };
+        // Ses Kontrolü
+        volCtrl.addEventListener('input', (e) => {
+            audio.volume = e.target.value;
+        });
 
-        // Korumalar
+        // Süre ve Progress Bar
+        audio.addEventListener('timeupdate', () => {
+            const current = audio.currentTime;
+            const duration = audio.duration;
+            progCtrl.value = (current / duration) * 100;
+
+            let cM = Math.floor(current / 60);
+            let cS = Math.floor(current % 60);
+            curTxt.innerText = `${cM}:${cS < 10 ? '0'+cS : cS}`;
+        });
+
+        progCtrl.addEventListener('input', (e) => {
+            audio.currentTime = (e.target.value / 100) * audio.duration;
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            let dM = Math.floor(audio.duration / 60);
+            let dS = Math.floor(audio.duration % 60);
+            durTxt.innerText = `${dM}:${dS < 10 ? '0'+dS : dS}`;
+        });
+
         document.addEventListener('contextmenu', e => e.preventDefault());
-        document.onkeydown = e => { if(e.keyCode == 123) return false; };
     </script>
 </body>
 </html>
