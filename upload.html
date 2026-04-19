@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Cloud | Upload & Share</title>
+    <title>Secure Cloud | Catbox Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Senin o özel fontun amcık */
         @font-face {
             font-family: 'ExFont';
             src: url('font.ttf');
@@ -17,7 +16,7 @@
             --card-bg: #0a0a0a;
             --accent: #ffffff;
             --border: #1a1a1a;
-            --secondary: #555;
+            --catbox: #634d9d; /* Catbox Moru/Mavisi */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -25,24 +24,18 @@
         body {
             background-color: var(--bg);
             color: var(--accent);
-            font-family: 'ExFont', 'JetBrains Mono', monospace;
+            font-family: 'ExFont', sans-serif;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            position: relative;
         }
 
-        /* KAR YAĞIŞI EFEKTİ (Üstlerden dökülen o kar) */
         canvas#snow {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 1;
         }
 
         .upload-card {
@@ -54,15 +47,15 @@
             text-align: center;
             box-shadow: 0 30px 100px rgba(0,0,0,0.9);
             position: relative;
-            z-index: 20;
+            z-index: 10;
         }
 
-        .title {
-            font-size: 24px;
-            letter-spacing: 8px;
-            font-weight: 900;
-            margin-bottom: 40px;
+        .title { 
+            font-size: 24px; 
+            letter-spacing: 8px; 
+            margin-bottom: 40px; 
             text-transform: uppercase;
+            font-weight: 900;
         }
 
         .drop-zone {
@@ -70,77 +63,48 @@
             border-radius: 20px;
             padding: 50px 20px;
             cursor: pointer;
-            transition: all 0.4s ease;
-            position: relative;
+            transition: 0.3s;
+            display: block;
         }
 
-        .drop-zone:hover {
-            border-color: #444;
-            background: rgba(255,255,255,0.01);
-            transform: scale(1.02);
-        }
+        .drop-zone:hover { border-color: var(--catbox); background: rgba(99, 77, 157, 0.05); }
 
         .icon-box {
             background: rgba(255,255,255,0.03);
-            width: 60px;
-            height: 60px;
+            width: 60px; height: 60px;
             border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 24px;
-            color: #444;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px; font-size: 24px; color: var(--secondary);
         }
 
-        .main-text { font-size: 14px; color: #ccc; margin-bottom: 8px; }
-        .sub-text { font-size: 10px; color: #444; letter-spacing: 1px; }
-
         #status {
-            margin-top: 30px;
-            font-size: 11px;
-            color: #333;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            margin-top: 30px; font-size: 11px; color: #444;
+            letter-spacing: 2px; text-transform: uppercase;
         }
 
         .progress-bar {
-            width: 100%;
-            height: 1px;
-            background: #111;
-            margin-top: 20px;
-            display: none;
+            width: 100%; height: 2px; background: #111;
+            margin-top: 20px; display: none; overflow: hidden;
         }
 
         .progress-fill {
-            height: 100%;
-            background: #fff;
-            width: 0%;
-            transition: 0.1s;
+            height: 100%; background: var(--catbox); width: 0%;
+            transition: 0.3s ease;
         }
 
         #link-display {
-            background: #0d0d0d;
-            border: 1px solid #1a1a1a;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 25px;
-            font-size: 11px;
-            color: #3399ff;
-            word-break: break-all;
-            display: none;
-            cursor: pointer;
+            background: #0d0d0d; border: 1px solid var(--catbox);
+            padding: 15px; border-radius: 10px; margin-top: 25px;
+            font-size: 11px; color: #fff; word-break: break-all;
+            display: none; cursor: pointer;
+            animation: fadeIn 0.5s;
         }
 
-        .footer {
-            margin-top: 50px;
-            font-size: 9px;
-            color: #222;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         #file-input { display: none; }
+
+        .footer { margin-top: 40px; font-size: 9px; color: #222; letter-spacing: 4px; }
     </style>
 </head>
 <body>
@@ -150,12 +114,10 @@
     <div class="upload-card">
         <h1 class="title">UPLOAD & SHARE</h1>
 
-        <label for="file-input" class="drop-zone" id="drop-area">
-            <div class="icon-box">
-                <i class="fa-solid fa-cloud-arrow-up"></i>
-            </div>
-            <p class="main-text">Dosyayı buraya bırak veya tıkla</p>
-            <p class="sub-text">Max 2GB - Linkler 2 hafta geçerlidir</p>
+        <label for="file-input" class="drop-zone">
+            <div class="icon-box"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <p style="font-size: 14px; color: #ccc;">Dosyayı seç veya buraya sürükle</p>
+            <p style="font-size: 10px; color: #444; margin-top: 5px;">CATBOX.MOE ENGINE - PERMANENT LINKS</p>
         </label>
         <input type="file" id="file-input">
 
@@ -165,102 +127,94 @@
             <div class="progress-fill" id="p-fill"></div>
         </div>
 
-        <div id="link-display" onclick="copyLink()"></div>
-
-        <div class="footer">PROTECTED BY SECURE-CLOUD API</div>
+        <div id="link-display"></div>
+        
+        <div class="footer">CATBOX API INTEGRATION v1.2</div>
     </div>
 
     <script>
         // KAR YAĞIŞI SİSTEMİ
         const canvas = document.getElementById('snow');
         const ctx = canvas.getContext('2d');
-        let width, height, flakes = [];
+        let flakes = [];
 
-        function initSnow() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-            flakes = [];
-            for (let i = 0; i < 150; i++) {
-                flakes.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    s: Math.random() * 2 + 1,
-                    d: Math.random() * 1 + 0.5
-                });
-            }
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            flakes = Array.from({length: 120}, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                s: Math.random() * 2 + 0.5,
+                d: Math.random() * 0.5 + 0.3
+            }));
         }
 
-        function drawSnow() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-            ctx.beginPath();
+        function draw() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(255,255,255,0.4)";
             flakes.forEach(f => {
-                ctx.moveTo(f.x, f.y);
-                ctx.arc(f.x, f.y, f.s, 0, Math.PI * 2);
+                ctx.beginPath();
+                ctx.arc(f.x, f.y, f.s, 0, Math.PI*2);
+                ctx.fill();
                 f.y += f.d;
-                if (f.y > height) f.y = -10;
+                if(f.y > canvas.height) f.y = -5;
             });
-            ctx.fill();
-            requestAnimationFrame(drawSnow);
+            requestAnimationFrame(draw);
         }
+        init(); draw();
+        window.onresize = init;
 
-        window.onresize = initSnow;
-        initSnow();
-        drawSnow();
-
-        // UPLOAD SİSTEMİ (FILE.IO API)
+        // CATBOX UPLOAD SİSTEMİ
         const fileInput = document.getElementById('file-input');
         const status = document.getElementById('status');
-        const pBar = document.getElementById('p-bar');
         const pFill = document.getElementById('p-fill');
-        const linkDisplay = document.getElementById('link-display');
+        const pBar = document.getElementById('p-bar');
+        const linkDisp = document.getElementById('link-display');
 
-        fileInput.addEventListener('change', async function() {
-            if (this.files && this.files[0]) {
-                const file = this.files[0];
-                const formData = new FormData();
-                formData.append('file', file);
+        fileInput.onchange = async () => {
+            const file = fileInput.files[0];
+            if(!file) return;
 
-                status.innerText = "UPLOADING: " + file.name.toUpperCase();
-                pBar.style.display = 'block';
-                linkDisplay.style.display = 'none';
+            const formData = new FormData();
+            formData.append('reqtype', 'fileupload');
+            formData.append('fileToUpload', file);
 
-                try {
-                    const response = await fetch('https://file.io', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    const result = await response.json();
+            status.innerText = "UPLOADING TO CATBOX...";
+            pBar.style.display = 'block';
+            pFill.style.width = '30%';
 
-                    if (result.success) {
-                        pFill.style.width = "100%";
-                        status.innerHTML = `<span style="color: #fff">SUCCESSFULLY UPLOADED</span>`;
-                        linkDisplay.innerText = result.link;
-                        linkDisplay.style.display = 'block';
-                    } else {
-                        status.innerText = "TRANSMISSION FAILED";
-                    }
-                } catch (e) {
-                    status.innerText = "ERROR IN CLOUD SYSTEM";
+            try {
+                // Catbox CORS politikası nedeniyle bazen direkt tarayıcıdan izin vermez.
+                // Eğer hata alırsan bu URL'nin önüne bir CORS proxy eklemen gerekebilir.
+                const res = await fetch('https://catbox.moe/user/api.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if(!res.ok) throw new Error("Connection Error");
+
+                const data = await res.text(); // Catbox direkt linki text olarak döner
+                
+                if(data.startsWith('http')) {
+                    pFill.style.width = '100%';
+                    status.innerHTML = "<span style='color: #fff'>UPLOAD COMPLETE</span>";
+                    linkDisp.innerText = data;
+                    linkDisp.style.display = 'block';
+                } else {
+                    status.innerText = "CATBOX REJECTED: " + data;
                 }
+            } catch (err) {
+                console.error(err);
+                status.innerText = "CORRUPTION DETECTED: TRY SMALLER FILE";
             }
-        });
+        };
 
-        function copyLink() {
-            const link = linkDisplay.innerText;
-            navigator.clipboard.writeText(link);
-            const original = linkDisplay.innerText;
-            linkDisplay.innerText = "COPIED TO CLIPBOARD";
-            linkDisplay.style.color = "#fff";
-            setTimeout(() => { 
-                linkDisplay.innerText = original; 
-                linkDisplay.style.color = "#3399ff";
-            }, 1500);
-        }
-
-        document.addEventListener('contextmenu', e => e.preventDefault());
+        linkDisp.onclick = () => {
+            navigator.clipboard.writeText(linkDisp.innerText);
+            const old = linkDisp.innerText;
+            linkDisp.innerText = "LINK COPIED!";
+            setTimeout(() => linkDisp.innerText = old, 1500);
+        };
     </script>
 </body>
 </html>
