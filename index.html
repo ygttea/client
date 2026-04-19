@@ -12,13 +12,13 @@
             --primary: #ffffff;
             --accent: #3b82f6;
             --bg: #050505;
+            --glass: rgba(255, 255, 255, 0.015);
+            --border: rgba(255, 255, 255, 0.08);
         }
 
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
+            margin: 0; padding: 0; box-sizing: border-box;
+            user-select: none; -webkit-user-drag: none;
         }
 
         body {
@@ -30,283 +30,245 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: crosshair;
         }
 
-        /* Video/Gif Arka Planı (Opsiyonel) veya Saf Yağmur */
-        #canvas-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at center, #111 0%, #050505 100%);
+        /* Arka Plan Yağmur & Blur Efekti */
+        #bg-canvas {
+            position: fixed; inset: 0; z-index: -1;
+            background: radial-gradient(circle at center, #0f0f0f 0%, #050505 100%);
         }
 
         .raindrop {
             position: absolute;
-            background: linear-gradient(transparent, rgba(255, 255, 255, 0.4));
+            background: linear-gradient(transparent, rgba(255, 255, 255, 0.3));
             width: 1px;
             animation: fall linear infinite;
         }
 
-        /* Giriş Paneli */
+        @keyframes fall { to { transform: translateY(110vh); } }
+
+        /* Giriş Paneli - Müzik İçin Şart */
         #entry-overlay {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         #entry-overlay.fade-out {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(1.2);
+            opacity: 0; pointer-events: none; transform: scale(1.5);
         }
 
-        .click-to-enter {
-            font-size: 12px;
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.5);
-            animation: pulse 2s infinite;
-            cursor: pointer;
+        .entry-text {
+            font-size: 13px; letter-spacing: 10px; color: #555;
+            text-transform: uppercase; animation: pulse 2s infinite;
         }
 
-        /* Profil Kartı Gelişmiş */
-        .main-wrapper {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 1s ease 0.5s;
+        @keyframes pulse { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+
+        /* Ana Profil Kartı */
+        .main-container {
+            opacity: 0; transform: scale(0.9);
+            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        .main-wrapper.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .main-container.show { opacity: 1; transform: scale(1); }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.015);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 30px;
-            padding: 50px 40px;
-            width: 450px;
+            background: var(--glass);
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
+            border: 1px solid var(--border);
+            border-radius: 35px;
+            padding: 60px 45px;
+            width: 480px;
             text-align: center;
-            box-shadow: 0 0 80px rgba(0, 0, 0, 0.5);
-        }
-
-        .avatar-box {
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.6);
             position: relative;
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 25px;
         }
 
-        .avatar-box img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            object-fit: cover;
-            transition: 0.5s;
+        /* Profil Fotoğrafı (Glitch Efektli) */
+        .avatar-wrapper {
+            position: relative; width: 150px; height: 150px; margin: 0 auto 30px;
         }
 
-        .avatar-box:hover img {
-            transform: scale(1.05);
+        .avatar-wrapper img {
+            width: 100%; height: 100%; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.1);
+            object-fit: cover; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .avatar-wrapper:hover img {
+            transform: scale(1.08) rotate(3deg);
             border-color: var(--accent);
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.4);
         }
 
-        .username {
-            font-size: 38px;
-            font-weight: 700;
-            letter-spacing: -1.5px;
-            background: linear-gradient(to bottom, #fff 30%, #888 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
+        /* Kullanıcı Adı (Glow Efekti) */
+        .username-glitch {
+            font-size: 42px; font-weight: 800; letter-spacing: -2px;
+            background: linear-gradient(180deg, #fff 0%, #666 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.3));
         }
 
-        /* Orijinal Badge Sistemi */
-        .badge-list {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin: 20px 0;
+        /* Badge Sistemi - Birebir rip.tf */
+        .badge-container {
+            display: flex; justify-content: center; gap: 14px; margin: 25px 0;
         }
 
-        .badge-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.3s;
-            position: relative;
-        }
-
-        .badge-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-        }
-
-        .badge-item img {
-            width: 24px;
-            height: 24px;
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
-        }
-
-        /* Müzik Çalar Widget */
-        .music-widget {
+        .badge {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 15px 25px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
+            border-radius: 14px;
+            width: 45px; height: 45px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s;
         }
 
-        .disc-anim {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: conic-gradient(#333, #fff, #333);
-            animation: spin 3s linear infinite;
+        .badge:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .badge img { width: 26px; height: 26px; }
+
+        /* Müzik Widget (Modern) */
+        .music-player {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 15px 30px;
+            margin-bottom: 35px;
+            display: flex; align-items: center; gap: 20px;
+        }
+
+        .music-icon {
+            font-size: 24px; color: var(--accent);
+            animation: spin 5s linear infinite;
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-        .view-counter {
-            position: absolute;
-            top: 25px;
-            right: 30px;
-            font-size: 10px;
-            color: rgba(255,255,255,0.2);
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        /* Sayaç */
+        .stats {
+            position: absolute; top: 30px; right: 40px;
+            font-size: 10px; color: rgba(255,255,255,0.2);
+            letter-spacing: 3px; font-weight: bold;
         }
 
-        .social-btn {
-            font-size: 20px;
-            color: rgba(255,255,255,0.4);
-            transition: 0.3s;
+        .socials {
+            display: flex; justify-content: center; gap: 30px; margin-top: 40px;
         }
 
-        .social-btn:hover {
-            color: #fff;
-            text-shadow: 0 0 10px #fff;
+        .social-link {
+            font-size: 22px; color: rgba(255,255,255,0.3);
+            transition: 0.4s;
+        }
+
+        .social-link:hover {
+            color: #fff; transform: scale(1.3);
+            filter: drop-shadow(0 0 10px #fff);
         }
 
     </style>
 </head>
 <body>
 
-    <div id="entry-overlay" onclick="unlock()">
-        <div class="click-to-enter text-center">
-            <i class="fa-solid fa-shield-halved mb-4 block text-3xl"></i>
-            [ click to access ]
-        </div>
+    <div id="entry-overlay" onclick="launch()">
+        <div class="entry-text">[ click to bypass ]</div>
     </div>
 
-    <div id="canvas-container"></div>
+    <div id="bg-canvas"></div>
 
-    <div class="main-wrapper" id="content">
+    <div class="main-container" id="mainCard">
         <div class="glass-card">
-            <div class="view-counter">
-                Views: <span id="count-num">0</span>
-            </div>
+            <div class="stats">VIEWS: <span id="viewCount">0</span></div>
 
-            <div class="music-widget">
-                <div class="disc-anim"></div>
+            <div class="music-player">
+                <i class="fa-solid fa-compact-disc music-icon"></i>
                 <div class="text-left">
-                    <p class="text-[9px] text-blue-400 font-bold uppercase tracking-[2px]">Currently Playing</p>
-                    <p class="text-sm font-medium">Inna - Amazing</p>
+                    <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-1">Now playing</p>
+                    <p class="text-sm font-bold tracking-tight">Inna - Amazing</p>
                 </div>
             </div>
 
-            <div class="avatar-box">
+            <div class="avatar-wrapper">
                 <img src="https://cdn.discordapp.com/avatars/1305977261454917703/5d680e3ff33e58ef19d6dfd1041119c8.webp?size=1024" alt="linux">
             </div>
 
-            <h1 class="username">linux</h1>
-            <p class="text-[11px] text-gray-500 uppercase tracking-[4px] mb-4 underline decoration-blue-500/50">Developer</p>
+            <h1 class="username-glitch">linux</h1>
+            <p class="text-[12px] text-blue-400 font-bold uppercase tracking-[5px] mt-2 opacity-60">Fullstack</p>
 
-            <div class="badge-list">
-                <div class="badge-item"><img src="https://client-gold-nu-77.vercel.app/owner.svg" title="Owner"></div>
-                <div class="badge-item"><img src="https://client-gold-nu-77.vercel.app/staff.svg" title="Staff"></div>
-                <div class="badge-item"><img src="https://client-gold-nu-77.vercel.app/verified.svg" title="Verified"></div>
-                <div class="badge-item"><img src="https://client-gold-nu-77.vercel.app/premium.svg" title="Premium"></div>
-                <div class="badge-item"><img src="https://client-gold-nu-77.vercel.app/booster.svg" title="Booster"></div>
+            <div class="badge-container">
+                <div class="badge"><img src="owner.svg" title="Owner"></div>
+                <div class="badge"><img src="staff.svg" title="Staff"></div>
+                <div class="badge"><img src="verified.svg" title="Verified"></div>
+                <div class="badge"><img src="premium.svg" title="Premium"></div>
+                <div class="badge"><img src="early.svg" title="Early Supporter"></div>
             </div>
 
-            <div class="mt-8 flex justify-center gap-8">
-                <a href="#" class="social-btn"><i class="fa-brands fa-discord"></i></a>
-                <a href="#" class="social-btn"><i class="fa-brands fa-github"></i></a>
-                <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+            <div class="socials">
+                <a href="#" class="social-link"><i class="fa-brands fa-discord"></i></a>
+                <a href="#" class="social-link"><i class="fa-brands fa-github"></i></a>
+                <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
             </div>
         </div>
     </div>
 
-    <audio id="bg-audio" src="https://client-gold-nu-77.vercel.app/inna-amazing.mp3" loop></audio>
+    <audio id="audioTrack" src="inna-amazing.mp3" loop></audio>
 
     <script>
-        // Detaylı Yağmur Efekti
-        const container = document.getElementById('canvas-container');
+        // Detaylı Yağmur Scripti
         function createRain() {
-            for(let i=0; i<80; i++) {
+            const canvas = document.getElementById('bg-canvas');
+            for(let i=0; i<100; i++) {
                 const drop = document.createElement('div');
                 drop.className = 'raindrop';
                 drop.style.left = Math.random() * 100 + 'vw';
-                drop.style.height = Math.random() * 100 + 50 + 'px';
+                drop.style.height = Math.random() * 80 + 40 + 'px';
                 drop.style.top = -Math.random() * 200 + 'px';
-                drop.style.animationDuration = Math.random() * 0.5 + 0.5 + 's';
-                drop.style.opacity = Math.random() * 0.3;
-                container.appendChild(drop);
+                drop.style.animationDuration = Math.random() * 0.4 + 0.3 + 's';
+                drop.style.opacity = Math.random() * 0.2;
+                canvas.appendChild(drop);
             }
         }
         createRain();
 
-        // Sayfa Açılış Fonksiyonu
-        function unlock() {
-            const audio = document.getElementById('bg-audio');
-            audio.volume = 0.4;
-            audio.play();
+        // Siteyi Başlatma Fonksiyonu
+        function launch() {
+            const audio = document.getElementById('audioTrack');
+            audio.volume = 0.5;
+            audio.play().catch(e => console.log("Müzik hatası:", e));
 
             document.getElementById('entry-overlay').classList.add('fade-out');
-            document.getElementById('content').classList.add('show');
-
-            // Sayaç Başlat (0'dan hızlıca hedef sayıya çıksın veya 0'da kalsın)
-            startCounter();
-        }
-
-        function startCounter() {
-            let target = Math.floor(Math.random() * 1000) + 500;
-            let current = 0;
-            const el = document.getElementById('count-num');
+            document.getElementById('mainCard').classList.add('show');
             
-            const timer = setInterval(() => {
-                if(current >= target) clearInterval(timer);
-                current += Math.ceil((target - current) / 10);
-                el.innerText = current;
-            }, 50);
+            animateCounter();
         }
 
-        // Sağ Tık Engelleme (rip.tf stili)
-        document.addEventListener('contextmenu', event => event.preventDefault());
+        // Sahte Görüntülenme Sayacı
+        function animateCounter() {
+            let target = 732; 
+            let current = 0;
+            const el = document.getElementById('viewCount');
+            const step = () => {
+                if(current < target) {
+                    current += Math.ceil((target - current) / 15 + 1);
+                    el.innerText = current;
+                    setTimeout(step, 40);
+                }
+            };
+            step();
+        }
+
+        // Sağ tık ve bazı kısayolları engelle
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.onkeydown = function(e) {
+            if(e.keyCode == 123) return false; // F12
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+        };
     </script>
 </body>
 </html>
