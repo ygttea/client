@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile | @kullaniciadi</title>
+    <title>Bio | @ersy</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,17 +11,18 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'JetBrains Mono', monospace !important;
             background: #050505;
-            color: #fff;
+            color: #fbf9f9;
             overflow: hidden;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: crosshair;
         }
 
-        /* Yağmur Efekti */
+        /* Yağmur Efekti (ersy.html stili) */
         .rain {
             position: fixed;
             top: 0;
@@ -31,182 +32,191 @@
             z-index: -1;
             pointer-events: none;
         }
-
-        .drop {
+        .raindrop {
             position: absolute;
-            background: linear-gradient(transparent, rgba(255, 255, 255, 0.1));
+            background: linear-gradient(transparent, rgba(255, 251, 251, 0.3));
             width: 1px;
-            height: 60px;
+            height: 80px;
             top: -100px;
             animation: fall linear infinite;
         }
+        @keyframes fall { to { transform: translateY(110vh); } }
 
-        @keyframes fall {
-            to { transform: translateY(110vh); }
-        }
-
-        /* Glassmorphism Kart */
-        .bio-card {
-            background: rgba(10, 10, 10, 0.5);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px 30px;
+        /* Profil Kartı (Orijinal Blur ve Şeffaflık) */
+        .profile-card {
+            background: rgba(0, 0, 0, 0.12) !important;
+            backdrop-filter: blur(11px) !important;
+            -webkit-backdrop-filter: blur(11px) !important;
+            border: 1px solid rgba(255, 251, 251, 0.1);
+            border-radius: 23px;
+            padding: 40px;
             width: 90%;
-            max-width: 420px;
+            max-width: 450px;
             text-align: center;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             position: relative;
         }
 
-        /* Profil Fotoğrafı (PP) */
-        .avatar-container {
-            position: relative;
-            width: 110px;
-            height: 110px;
-            margin: 0 auto 20px;
-        }
-
-        .avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            object-fit: cover;
-        }
-
-        /* Online Noktası */
-        .status-dot {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            width: 14px;
-            height: 14px;
-            background: #22c55e;
-            border-radius: 50%;
-            border: 2px solid #0a0a0a;
-            box-shadow: 0 0 10px #22c55e;
-        }
-
-        /* Badges */
-        .badges {
+        /* Orijinal Badge Tasarımı */
+        .profile-badges {
             display: flex;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             margin-top: 10px;
         }
-
-        .badge {
-            background: rgba(255, 255, 255, 0.05);
+        .profile-badge {
+            position: relative;
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 10px;
-            color: #aaa;
+            border-radius: 8px;
+            padding: 5px;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
-            gap: 4px;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .profile-badge:hover { transform: scale(1.1); }
+        .profile-badge img { width: 20px; height: 20px; }
+
+        /* Müzik Çalar Alanı (En Üst) */
+        .music-player {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 10px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .badge i {
-            font-size: 12px;
+        .avatar-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+        .username {
+            font-size: 32px;
+            font-weight: bold;
+            text-shadow: 0 0 15px rgba(251, 249, 249, 0.6);
+            margin-bottom: 5px;
+        }
+
+        .bio-text {
+            color: #fbf9f9;
+            font-size: 13px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .social-link {
+            font-size: 24px;
             color: #fff;
+            margin: 0 10px;
+            filter: drop-shadow(0 0 5px #fff);
+            transition: 0.3s;
         }
+        .social-link:hover { transform: scale(1.2); opacity: 0.8; }
 
-        /* Sayaç */
-        .view-count {
+        /* View Count Badge */
+        .view-badge {
             position: absolute;
-            top: 20px;
-            right: 25px;
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.3);
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
             display: flex;
             align-items: center;
             gap: 5px;
-        }
-
-        .link-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 14px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            transition: 0.3s ease;
-            color: #ccc;
-        }
-
-        .link-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-            color: #fff;
-            transform: scale(1.02);
-        }
-
-        .username-text {
-            font-size: 24px;
-            font-weight: bold;
-            letter-spacing: -1px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255,255,255,0.1);
         }
     </style>
 </head>
 <body>
 
-    <div class="rain" id="rainLayer"></div>
+    <div class="rain" id="rainContainer"></div>
 
-    <div class="bio-card">
-        <div class="view-count">
-            <i class="fa-regular fa-eye"></i>
-            <span id="counter">0</span>
+    <div class="profile-card">
+        <div class="view-badge">
+            <i class="fa-regular fa-eye"></i> <span id="count">493</span>
         </div>
 
-        <div class="avatar-container">
-            <img src="https://via.placeholder.com/150" alt="PP" class="avatar">
-            <div class="status-dot"></div>
-        </div>
-        
-        <div class="mb-6">
-            <h1 class="username-text">@kullaniciadi</h1>
-            <div class="badges">
-                <div class="badge" title="Developer"><i class="fa-solid fa-code"></i></div>
-                <div class="badge" title="Verified"><i class="fa-solid fa-check-double text-blue-400"></i></div>
-                <div class="badge" title="Early Supporter"><i class="fa-solid fa-star text-yellow-400"></i></div>
+        <div class="music-player">
+            <i class="fa-solid fa-music text-white animate-pulse"></i>
+            <div class="text-left flex-1">
+                <div class="text-[10px] text-gray-400 uppercase tracking-tighter">Şu an çalıyor</div>
+                <div class="text-[12px] font-bold">Sevdiğin Parça Adı</div>
             </div>
+            <button onclick="toggleAudio()" id="playBtn">
+                <i class="fa-solid fa-pause"></i>
+            </button>
         </div>
 
-        <div class="flex flex-col mt-4">
-            <a href="#" class="link-btn"><i class="fa-brands fa-discord"></i> Discord</a>
-            <a href="#" class="link-btn"><i class="fa-brands fa-github"></i> GitHub Repo</a>
-            <a href="#" class="link-btn"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Files</a>
+        <div class="avatar-circle">
+            <img src="pp.jpg" alt="Avatar"> </div>
+
+        <h1 class="username">ersy</h1>
+        
+        <div class="profile-badges">
+            <div class="profile-badge"><img src="https://rip.tf/assets/img/badges/owner.svg" title="Owner"></div>
+            <div class="profile-badge"><img src="https://rip.tf/assets/img/badges/staff.svg" title="Staff"></div>
+            <div class="profile-badge"><img src="https://rip.tf/assets/img/badges/verified.svg" title="Verified"></div>
+            <div class="profile-badge"><img src="https://rip.tf/assets/img/badges/premium.svg" title="Premium"></div>
         </div>
 
-        <div class="mt-10 text-[9px] text-gray-700 tracking-[4px] uppercase">
-            protected by secure-cloud
+        <p class="bio-text mt-4">live alone, die alone.</p>
+
+        <div class="mt-6">
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-spotify"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-steam"></i></a>
         </div>
     </div>
 
+    <audio id="myAudio" src="muzik.mp3" loop autoplay></audio>
+
     <script>
-        // Yağmur Efekti
-        const layer = document.getElementById('rainLayer');
-        for (let i = 0; i < 60; i++) {
+        // Yağmur Döngüsü
+        const rain = document.getElementById('rainContainer');
+        for (let i = 0; i < 50; i++) {
             const drop = document.createElement('div');
-            drop.className = 'drop';
+            drop.className = 'raindrop';
             drop.style.left = Math.random() * 100 + 'vw';
-            drop.style.animationDuration = (Math.random() * 0.6 + 0.4) + 's';
+            drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
             drop.style.animationDelay = Math.random() * 2 + 's';
-            layer.appendChild(drop);
+            rain.appendChild(drop);
         }
 
-        // Basit Ziyaretçi Sayacı (Local Storage)
-        let count = localStorage.getItem('visit_count') || 0;
+        // Müzik Kontrolü
+        const audio = document.getElementById('myAudio');
+        const playBtn = document.getElementById('playBtn');
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            } else {
+                audio.pause();
+                playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            }
+        }
+
+        // Sayaç
+        let count = localStorage.getItem('v_count') || 493;
         count++;
-        localStorage.setItem('visit_count', count);
-        document.getElementById('counter').innerText = count;
+        localStorage.setItem('v_count', count);
+        document.getElementById('count').innerText = count;
     </script>
 </body>
 </html>
