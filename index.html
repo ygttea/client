@@ -10,29 +10,24 @@
     <style>
         :root {
             --primary: #ffffff;
-            --accent: #3b82f6;
+            --spotify: #1DB954;
             --bg: #050505;
             --glass: rgba(255, 255, 255, 0.015);
             --border: rgba(255, 255, 255, 0.08);
         }
 
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            user-select: none; -webkit-user-drag: none;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-drag: none; }
 
         body {
             background-color: var(--bg);
             color: var(--primary);
             font-family: 'JetBrains Mono', monospace;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            height: 100vh; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
             cursor: crosshair;
         }
 
+        /* Arka Plan Yağmur Efekti */
         #bg-canvas {
             position: fixed; inset: 0; z-index: -1;
             background: radial-gradient(circle at center, #0f0f0f 0%, #050505 100%);
@@ -47,6 +42,7 @@
 
         @keyframes fall { to { transform: translateY(110vh); } }
 
+        /* Giriş Paneli (Tıklamazsan ananın amı gibi sessiz kalır site) */
         #entry-overlay {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -54,130 +50,146 @@
             cursor: pointer;
         }
 
-        #entry-overlay.fade-out {
-            opacity: 0; pointer-events: none; transform: scale(1.5);
-        }
+        #entry-overlay.fade-out { opacity: 0; pointer-events: none; transform: scale(1.5); }
 
         .entry-text {
-            font-size: 13px; letter-spacing: 10px; color: #555;
-            text-transform: uppercase; animation: pulse 2s infinite;
+            font-size: 13px; letter-spacing: 12px; color: #444;
+            text-transform: uppercase; animation: pulse 1.5s infinite;
         }
 
-        @keyframes pulse { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+        @keyframes pulse { 0%, 100% { opacity: 0.2; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1); } }
 
+        /* Spotify Menüsü (O istediğin şekilli şukullu yer) */
+        #spotify-menu {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 5, 0.98); border-radius: 35px;
+            z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--spotify);
+        }
+
+        #spotify-menu.active { opacity: 1; pointer-events: all; }
+
+        .spotify-album {
+            width: 190px; height: 190px; border-radius: 20px;
+            margin-bottom: 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .spotify-controls { display: flex; items: center; gap: 35px; margin-top: 25px; }
+        .spotify-btn { color: #b3b3b3; transition: 0.3s; cursor: pointer; }
+        .spotify-btn:hover { color: white; transform: scale(1.1); }
+        .play-pause { font-size: 55px; color: white; }
+
+        /* Ana Kart Yapısı */
         .main-container {
-            opacity: 0; transform: scale(0.9);
-            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+            opacity: 0; transform: scale(0.85);
+            transition: all 1.3s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         .main-container.show { opacity: 1; transform: scale(1); }
 
         .glass-card {
             background: var(--glass);
-            backdrop-filter: blur(25px) saturate(200%);
-            -webkit-backdrop-filter: blur(25px) saturate(200%);
+            backdrop-filter: blur(30px) saturate(220%);
+            -webkit-backdrop-filter: blur(30px) saturate(220%);
             border: 1px solid var(--border);
-            border-radius: 35px;
-            padding: 60px 45px;
-            width: 480px;
-            text-align: center;
-            box-shadow: 0 0 100px rgba(0, 0, 0, 0.6);
+            border-radius: 40px; padding: 70px 50px;
+            width: 500px; text-align: center;
+            box-shadow: 0 0 120px rgba(0, 0, 0, 0.7);
             position: relative;
         }
 
-        /* Müzik Player Tıklanabilir */
-        .music-player {
-            background: rgba(255, 255, 255, 0.01);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 15px 30px;
-            margin-bottom: 35px;
-            display: flex; align-items: center; gap: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .music-player:hover {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .music-icon {
-            font-size: 24px; color: var(--accent);
-        }
-
-        .spinning {
-            animation: spin 5s linear infinite;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .avatar-wrapper {
-            position: relative; width: 150px; height: 150px; margin: 0 auto 30px;
-        }
-
+        /* Profil Detayları */
+        .avatar-wrapper { position: relative; width: 160px; height: 160px; margin: 0 auto 35px; }
         .avatar-wrapper img {
             width: 100%; height: 100%; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.1);
-            object-fit: cover; transition: 0.5s;
+            border: 3px solid rgba(255,255,255,0.05);
+            object-fit: cover; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        .avatar-wrapper:hover img { transform: scale(1.1) rotate(-3deg); border-color: var(--accent); }
 
-        .username-glitch {
-            font-size: 42px; font-weight: 800; letter-spacing: -2px;
-            background: linear-gradient(180deg, #fff 0%, #666 100%);
+        .username {
+            font-size: 46px; font-weight: 900; letter-spacing: -3px;
+            background: linear-gradient(180deg, #fff 20%, #444 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));
         }
 
-        .badge-container {
-            display: flex; justify-content: center; gap: 14px; margin: 25px 0;
-        }
-
-        .badge {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 14px;
-            width: 45px; height: 45px;
+        /* Badge Sistemi */
+        .badge-list { display: flex; justify-content: center; gap: 15px; margin: 30px 0; }
+        .badge-box {
+            background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border);
+            border-radius: 15px; width: 48px; height: 48px;
             display: flex; align-items: center; justify-content: center;
-            transition: 0.3s;
-        }
-
-        .badge img { width: 26px; height: 26px; }
-
-        .stats {
-            position: absolute; top: 30px; right: 40px;
-            font-size: 10px; color: rgba(255,255,255,0.2);
-            letter-spacing: 3px; font-weight: bold;
-        }
-
-        .socials {
-            display: flex; justify-content: center; gap: 30px; margin-top: 40px;
-        }
-
-        .social-link {
-            font-size: 22px; color: rgba(255,255,255,0.3);
             transition: 0.4s;
         }
+        .badge-box:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-7px); border-color: white; }
+        .badge-box img { width: 26px; height: 26px; }
 
-        .social-link:hover { color: #fff; transform: scale(1.2); }
+        /* Müzik Widget */
+        .mini-player {
+            background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border);
+            border-radius: 25px; padding: 18px 30px; margin-bottom: 40px;
+            display: flex; align-items: center; gap: 20px; cursor: pointer; transition: 0.3s;
+        }
+        .mini-player:hover { background: rgba(29, 185, 84, 0.08); border-color: var(--spotify); }
+        
+        .disc { font-size: 26px; color: var(--spotify); }
+        .spinning { animation: spin 4s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .view-count {
+            position: absolute; top: 35px; right: 45px;
+            font-size: 11px; color: rgba(255,255,255,0.2);
+            letter-spacing: 4px; font-weight: bold;
+        }
+
+        .social-row { display: flex; justify-content: center; gap: 35px; margin-top: 45px; }
+        .social-icon { font-size: 24px; color: rgba(255,255,255,0.3); transition: 0.5s; }
+        .social-icon:hover { color: white; transform: translateY(-5px); filter: drop-shadow(0 0 15px white); }
+
     </style>
 </head>
 <body>
 
-    <div id="entry-overlay" onclick="launch()">
-        <div class="entry-text">[ click to bypass ]</div>
+    <div id="entry-overlay" onclick="startSystem()">
+        <div class="entry-text">[ ACCESS DENIED - CLICK TO BYPASS ]</div>
     </div>
 
     <div id="bg-canvas"></div>
 
-    <div class="main-container" id="mainCard">
+    <div class="main-container" id="content">
         <div class="glass-card">
-            <div class="stats">VIEWS: <span id="viewCount">0</span></div>
+            
+            <div id="spotify-menu">
+                <div class="absolute top-8 right-10 cursor-pointer text-3xl text-gray-600 hover:text-white" onclick="toggleSpotify()">×</div>
+                <img src="https://client-gold-nu-77.vercel.app/5d680e3ff33e58ef19d6dfd1041119c8.png" class="spotify-album" id="menuAlbum">
+                <h2 class="text-2xl font-black mb-1">Inna - Amazing</h2>
+                <p class="text-green-500 font-bold text-xs tracking-[4px]">PLAYING FROM VERCEL</p>
+                
+                <div class="spotify-controls">
+                    <i class="fa-solid fa-shuffle spotify-btn text-sm"></i>
+                    <i class="fa-solid fa-backward-step spotify-btn text-2xl"></i>
+                    <i class="fa-solid fa-circle-pause spotify-btn play-pause" id="playBtn" onclick="togglePlay()"></i>
+                    <i class="fa-solid fa-forward-step spotify-btn text-2xl"></i>
+                    <i class="fa-solid fa-repeat spotify-btn text-sm"></i>
+                </div>
+                
+                <div class="mt-10 w-64 h-1 bg-gray-800 rounded-full overflow-hidden">
+                    <div id="progress" class="h-full bg-green-500 w-0 transition-all duration-500"></div>
+                </div>
+                
+                <button class="mt-10 text-[10px] tracking-[5px] text-gray-500 hover:text-white transition" onclick="toggleSpotify()">BACK TO PROFILE</button>
+            </div>
 
-            <div class="music-player" onclick="toggleMusic()">
-                <i class="fa-solid fa-compact-disc music-icon spinning" id="musicIcon"></i>
+            <div class="view-count">VIEWS: <span id="count">0</span></div>
+
+            <div class="mini-player" onclick="toggleSpotify()">
+                <i class="fa-solid fa-compact-disc disc spinning" id="mainDisc"></i>
                 <div class="text-left">
-                    <p class="text-[9px] text-gray-500 uppercase tracking-widest mb-1" id="statusText">Now playing</p>
-                    <p class="text-sm font-bold tracking-tight">Inna - Amazing</p>
+                    <p class="text-[10px] text-green-500 font-black uppercase tracking-[2px]">Spotify Overlay</p>
+                    <p class="text-sm font-bold">Inna - Amazing</p>
                 </div>
             </div>
 
@@ -185,87 +197,91 @@
                 <img src="https://client-gold-nu-77.vercel.app/5d680e3ff33e58ef19d6dfd1041119c8.png" alt="linux">
             </div>
 
-            <h1 class="username-glitch">linux</h1>
-            <p class="text-[12px] text-blue-400 font-bold uppercase tracking-[5px] mt-2 opacity-60">Fullstack</p>
+            <h1 class="username">linux</h1>
+            <p class="text-[13px] text-blue-500 font-bold uppercase tracking-[6px] mt-3">Fullstack Dev</p>
 
-            <div class="badge-container">
-                <div class="badge"><img src="owner.svg" title="Owner"></div>
-                <div class="badge"><img src="staff.svg" title="Staff"></div>
-                <div class="badge"><img src="verified.svg" title="Verified"></div>
-                <div class="badge"><img src="premium.svg" title="Premium"></div>
-                <div class="badge"><img src="early.svg" title="Early Supporter"></div>
+            <div class="badge-list">
+                <div class="badge-box"><img src="owner.svg" title="Owner"></div>
+                <div class="badge-box"><img src="staff.svg" title="Staff"></div>
+                <div class="badge-box"><img src="verified.svg" title="Verified"></div>
+                <div class="badge-box"><img src="premium.svg" title="Premium"></div>
+                <div class="badge-box"><img src="early.svg" title="Early Supporter"></div>
             </div>
 
-            <div class="socials">
-                <a href="#" class="social-link"><i class="fa-brands fa-discord"></i></a>
-                <a href="#" class="social-link"><i class="fa-brands fa-github"></i></a>
-                <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+            <div class="social-row">
+                <a href="#" class="social-icon"><i class="fa-brands fa-discord"></i></a>
+                <a href="#" class="social-icon"><i class="fa-brands fa-github"></i></a>
+                <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
             </div>
         </div>
     </div>
 
-    <audio id="audioTrack" src="https://cdn.discordapp.com/attachments/1482738905089441793/1495408359720095966/inna.mp3?ex=69e62310&is=69e4d190&hm=15fce5bb959fee617580cb7679f23fa87f7a6d666d80c9cb52ff0c411188d56d&" loop></audio>
+    <audio id="track" src="https://cdn.discordapp.com/attachments/1482738905089441793/1495408359720095966/inna.mp3?ex=69e62310&is=69e4d190&hm=15fce5bb959fee617580cb7679f23fa87f7a6d666d80c9cb52ff0c411188d56d&" loop></audio>
 
     <script>
-        const audio = document.getElementById('audioTrack');
-        const musicIcon = document.getElementById('musicIcon');
-        const statusText = document.getElementById('statusText');
+        const audio = document.getElementById('track');
+        const playBtn = document.getElementById('playBtn');
+        const mainDisc = document.getElementById('mainDisc');
+        const progress = document.getElementById('progress');
 
+        // Yağmur
         function createRain() {
             const canvas = document.getElementById('bg-canvas');
-            for(let i=0; i<100; i++) {
+            for(let i=0; i<120; i++) {
                 const drop = document.createElement('div');
                 drop.className = 'raindrop';
                 drop.style.left = Math.random() * 100 + 'vw';
-                drop.style.height = Math.random() * 80 + 40 + 'px';
-                drop.style.top = -Math.random() * 200 + 'px';
-                drop.style.animationDuration = Math.random() * 0.4 + 0.3 + 's';
+                drop.style.height = Math.random() * 70 + 50 + 'px';
+                drop.style.animationDuration = Math.random() * 0.5 + 0.3 + 's';
                 drop.style.opacity = Math.random() * 0.2;
                 canvas.appendChild(drop);
             }
         }
         createRain();
 
-        function launch() {
+        // Başlat
+        function startSystem() {
             audio.volume = 0.5;
-            audio.play().catch(e => console.log("Müzik hatası:", e));
+            audio.play();
             document.getElementById('entry-overlay').classList.add('fade-out');
-            document.getElementById('mainCard').classList.add('show');
-            animateCounter();
+            document.getElementById('content').classList.add('show');
+            
+            // Sayaç
+            let target = 842; let curr = 0;
+            const timer = setInterval(() => {
+                if(curr >= target) clearInterval(timer);
+                curr += Math.ceil((target - curr) / 20 + 1);
+                document.getElementById('count').innerText = curr > target ? target : curr;
+            }, 40);
         }
 
-        // MÜZİK DURDURMA / BAŞLATMA
-        function toggleMusic() {
+        // Spotify Toggle
+        function toggleSpotify() {
+            document.getElementById('spotify-menu').classList.toggle('active');
+        }
+
+        // Oynat/Durdur
+        function togglePlay() {
             if (audio.paused) {
                 audio.play();
-                musicIcon.classList.add('spinning');
-                musicIcon.classList.replace('fa-circle-play', 'fa-compact-disc');
-                statusText.innerText = "Now playing";
-                statusText.style.color = "#6b7280"; // Gray-500
+                playBtn.classList.replace('fa-circle-play', 'fa-circle-pause');
+                mainDisc.classList.add('spinning');
             } else {
                 audio.pause();
-                musicIcon.classList.remove('spinning');
-                musicIcon.classList.replace('fa-compact-disc', 'fa-circle-play');
-                statusText.innerText = "Paused";
-                statusText.style.color = "#ef4444"; // Red-500
+                playBtn.classList.replace('fa-circle-pause', 'fa-circle-play');
+                mainDisc.classList.remove('spinning');
             }
         }
 
-        function animateCounter() {
-            let target = 732; 
-            let current = 0;
-            const el = document.getElementById('viewCount');
-            const step = () => {
-                if(current < target) {
-                    current += Math.ceil((target - current) / 15 + 1);
-                    el.innerText = current;
-                    setTimeout(step, 40);
-                }
-            };
-            step();
-        }
+        // Progress Bar
+        audio.ontimeupdate = function() {
+            let pc = (audio.currentTime / audio.duration) * 100;
+            progress.style.width = pc + "%";
+        };
 
+        // Korumalar
         document.addEventListener('contextmenu', e => e.preventDefault());
+        document.onkeydown = e => { if(e.keyCode == 123) return false; };
     </script>
 </body>
 </html>
