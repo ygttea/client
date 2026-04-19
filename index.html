@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bio | @linux</title>
+    <title>Profile | @linux</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,7 +22,7 @@
             cursor: crosshair;
         }
 
-        /* Yağmur Efekti (ersy.html stili) */
+        /* Yağmur Efekti */
         .rain {
             position: fixed;
             top: 0;
@@ -34,7 +34,7 @@
         }
         .raindrop {
             position: absolute;
-            background: linear-gradient(transparent, rgba(255, 251, 251, 0.3));
+            background: linear-gradient(transparent, rgba(255, 251, 251, 0.2));
             width: 1px;
             height: 80px;
             top: -100px;
@@ -42,50 +42,51 @@
         }
         @keyframes fall { to { transform: translateY(110vh); } }
 
-        /* Profil Kartı (Orijinal Blur ve Şeffaflık) */
+        /* Profil Kartı */
         .profile-card {
-            background: rgba(0, 0, 0, 0.12) !important;
-            backdrop-filter: blur(11px) !important;
-            -webkit-backdrop-filter: blur(11px) !important;
+            background: rgba(0, 0, 0, 0.2) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
             border: 1px solid rgba(255, 251, 251, 0.1);
             border-radius: 23px;
             padding: 40px;
             width: 90%;
             max-width: 450px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
             position: relative;
         }
 
-        /* Orijinal Badge Tasarımı */
+        /* Badge Tasarımı (Vercel Linklerinle) */
         .profile-badges {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 12px;
+            margin-top: 15px;
         }
         .profile-badge {
-            position: relative;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 5px;
-            width: 32px;
-            height: 32px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
         }
-        .profile-badge:hover { transform: scale(1.1); }
-        .profile-badge img { width: 20px; height: 20px; }
+        .profile-badge:hover { 
+            transform: scale(1.15) translateY(-2px);
+            background: rgba(255, 255, 255, 0.07);
+        }
+        .profile-badge img { width: 22px; height: 22px; }
 
-        /* Müzik Çalar Alanı (En Üst) */
+        /* Müzik Çalar (En Üst) */
         .music-player {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 10px 20px;
-            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 18px;
+            padding: 12px 20px;
+            margin-bottom: 30px;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -93,54 +94,44 @@
         }
 
         .avatar-circle {
-            width: 120px;
-            height: 120px;
+            width: 125px;
+            height: 125px;
             border-radius: 50%;
-            margin: 0 auto 15px;
-            border: 2px solid rgba(255, 255, 255, 0.15);
+            margin: 0 auto 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
         }
         .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
 
         .username {
-            font-size: 32px;
-            font-weight: bold;
-            text-shadow: 0 0 15px rgba(251, 249, 249, 0.6);
-            margin-bottom: 5px;
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
         }
 
-        .bio-text {
-            color: #fbf9f9;
-            font-size: 13px;
-            opacity: 0.8;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
-        }
-
-        .social-link {
-            font-size: 24px;
-            color: #fff;
-            margin: 0 10px;
-            filter: drop-shadow(0 0 5px #fff);
-            transition: 0.3s;
-        }
-        .social-link:hover { transform: scale(1.2); opacity: 0.8; }
-
-        /* View Count Badge */
         .view-badge {
             position: absolute;
             top: 15px;
-            right: 15px;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 5px 12px;
-            border-radius: 20px;
+            right: 20px;
             font-size: 11px;
+            color: rgba(255,255,255,0.4);
             display: flex;
             align-items: center;
-            gap: 5px;
-            border: 1px solid rgba(255,255,255,0.1);
+            gap: 6px;
         }
+
+        #playBtn {
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        #playBtn:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -149,74 +140,86 @@
 
     <div class="profile-card">
         <div class="view-badge">
-            <i class="fa-regular fa-eye"></i> <span id="count">493</span>
+            <i class="fa-regular fa-eye"></i> <span id="count">0</span>
         </div>
 
         <div class="music-player">
-            <i class="fa-solid fa-music text-white animate-pulse"></i>
+            <i class="fa-solid fa-compact-disc text-white animate-spin-slow"></i>
             <div class="text-left flex-1">
-                <div class="text-[10px] text-gray-400 uppercase tracking-tighter">Şu an çalıyor</div>
-                <div class="text-[12px] font-bold">Sevdiğin Parça Adı</div>
+                <div class="text-[9px] text-gray-500 uppercase tracking-widest">Now Playing</div>
+                <div class="text-[12px] font-bold">Inna - Amazing</div>
             </div>
             <button onclick="toggleAudio()" id="playBtn">
-                <i class="fa-solid fa-pause"></i>
+                <i class="fa-solid fa-pause" id="playIcon"></i>
             </button>
         </div>
 
         <div class="avatar-circle">
-            <img src="pp.jpg" alt="Avatar"> </div>
+            <img src="https://cdn.discordapp.com/avatars/1305977261454917703/5d680e3ff33e58ef19d6dfd1041119c8.webp?size=1024" alt="linux">
+        </div>
 
         <h1 class="username">linux</h1>
         
         <div class="profile-badges">
-            <div class="profile-badge"><img src="https://rip.tf/assets/img/badges/owner.svg" title="Owner"></div>
-            <div class="profile-badge"><img src="https://rip.tf/assets/img/badges/staff.svg" title="Staff"></div>
-            <div class="profile-badge"><img src="https://rip.tf/assets/img/badges/verified.svg" title="Verified"></div>
-            <div class="profile-badge"><img src="https://rip.tf/assets/img/badges/premium.svg" title="Premium"></div>
+            <div class="profile-badge"><img src="https://client-gold-nu-77.vercel.app/owner.svg" title="Owner"></div>
+            <div class="profile-badge"><img src="https://client-gold-nu-77.vercel.app/staff.svg" title="Staff"></div>
+            <div class="profile-badge"><img src="https://client-gold-nu-77.vercel.app/verified.svg" title="Verified"></div>
+            <div class="profile-badge"><img src="https://client-gold-nu-77.vercel.app/premium.svg" title="Premium"></div>
+            <div class="profile-badge"><img src="https://client-gold-nu-77.vercel.app/booster.svg" title="Booster"></div>
         </div>
 
-        <p class="bio-text mt-4">live alone, die alone.</p>
+        <p class="text-[13px] text-gray-400 mt-6 italic opacity-80">"code is my religion."</p>
 
-        <div class="mt-6">
-            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-            <a href="#" class="social-link"><i class="fab fa-spotify"></i></a>
-            <a href="#" class="social-link"><i class="fab fa-steam"></i></a>
+        <div class="flex justify-center gap-6 mt-8">
+            <a href="#" class="text-gray-500 hover:text-white transition text-2xl"><i class="fab fa-discord"></i></a>
+            <a href="#" class="text-gray-500 hover:text-white transition text-2xl"><i class="fab fa-github"></i></a>
+            <a href="#" class="text-gray-500 hover:text-white transition text-2xl"><i class="fab fa-instagram"></i></a>
         </div>
     </div>
 
     <audio id="myAudio" src="https://client-gold-nu-77.vercel.app/inna-amazing.mp3" loop autoplay></audio>
 
     <script>
-        // Yağmur Döngüsü
+        // Yağmur
         const rain = document.getElementById('rainContainer');
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 60; i++) {
             const drop = document.createElement('div');
             drop.className = 'raindrop';
             drop.style.left = Math.random() * 100 + 'vw';
-            drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
+            drop.style.animationDuration = (Math.random() * 0.4 + 0.4) + 's';
             drop.style.animationDelay = Math.random() * 2 + 's';
             rain.appendChild(drop);
         }
 
-        // Müzik Kontrolü
+        // Müzik Kontrol
         const audio = document.getElementById('myAudio');
-        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon');
+        
         function toggleAudio() {
             if (audio.paused) {
                 audio.play();
-                playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                playIcon.className = 'fa-solid fa-pause';
             } else {
                 audio.pause();
-                playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                playIcon.className = 'fa-solid fa-play';
             }
         }
 
-        // Sayaç
-        let count = localStorage.getItem('v_count') || 493;
+        // Ziyaretçi Sayacı
+        let count = localStorage.getItem('v_count') || Math.floor(Math.random() * 500) + 100;
         count++;
         localStorage.setItem('v_count', count);
         document.getElementById('count').innerText = count;
+
+        // Sayfa tıklandığında müziği başlat (Tarayıcı engeli için)
+        document.body.addEventListener('click', () => {
+            if (audio.paused) audio.play();
+        }, { once: true });
     </script>
+
+    <style>
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spin 4s linear infinite; }
+    </style>
 </body>
 </html>
