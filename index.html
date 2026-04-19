@@ -3,223 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile | @linux</title>
+    <title>linux | @profile</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
+        :root {
+            --primary: #ffffff;
+            --accent: #3b82f6;
+            --bg: #050505;
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            font-family: 'JetBrains Mono', monospace !important;
-            background: #050505;
-            color: #fbf9f9;
-            overflow: hidden;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
             height: 100vh;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: crosshair;
         }
 
-        /* Yağmur Efekti */
-        .rain {
+        /* Video/Gif Arka Planı (Opsiyonel) veya Saf Yağmur */
+        #canvas-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            pointer-events: none;
+            background: radial-gradient(circle at center, #111 0%, #050505 100%);
         }
+
         .raindrop {
             position: absolute;
-            background: linear-gradient(transparent, rgba(255, 251, 251, 0.2));
+            background: linear-gradient(transparent, rgba(255, 255, 255, 0.4));
             width: 1px;
-            height: 80px;
-            top: -100px;
             animation: fall linear infinite;
         }
-        @keyframes fall { to { transform: translateY(110vh); } }
 
-        /* Profil Kartı */
-        .profile-card {
-            background: rgba(0, 0, 0, 0.2) !important;
-            backdrop-filter: blur(15px) !important;
-            -webkit-backdrop-filter: blur(15px) !important;
-            border: 1px solid rgba(255, 251, 251, 0.1);
-            border-radius: 23px;
-            padding: 40px;
-            width: 90%;
-            max-width: 450px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-            position: relative;
+        /* Giriş Paneli */
+        #entry-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Badge Tasarımı (Vercel Linklerinle) */
-        .profile-badges {
+        #entry-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.2);
+        }
+
+        .click-to-enter {
+            font-size: 12px;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            animation: pulse 2s infinite;
+            cursor: pointer;
+        }
+
+        /* Profil Kartı Gelişmiş */
+        .main-wrapper {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease 0.5s;
+        }
+
+        .main-wrapper.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.015);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            padding: 50px 40px;
+            width: 450px;
+            text-align: center;
+            box-shadow: 0 0 80px rgba(0, 0, 0, 0.5);
+        }
+
+        .avatar-box {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 25px;
+        }
+
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            object-fit: cover;
+            transition: 0.5s;
+        }
+
+        .avatar-box:hover img {
+            transform: scale(1.05);
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .username {
+            font-size: 38px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            background: linear-gradient(to bottom, #fff 30%, #888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        /* Orijinal Badge Sistemi */
+        .badge-list {
             display: flex;
             justify-content: center;
             gap: 12px;
-            margin-top: 15px;
+            margin: 20px 0;
         }
-        .profile-badge {
+
+        .badge-item {
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            width: 36px;
-            height: 36px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: 0.3s;
+            position: relative;
         }
-        .profile-badge:hover { 
-            transform: scale(1.15) translateY(-2px);
-            background: rgba(255, 255, 255, 0.07);
-        }
-        .profile-badge img { width: 22px; height: 22px; }
 
-        /* Müzik Çalar (En Üst) */
-        .music-player {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 18px;
-            padding: 12px 20px;
+        .badge-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .badge-item img {
+            width: 24px;
+            height: 24px;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
+        }
+
+        /* Müzik Çalar Widget */
+        .music-widget {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 15px 25px;
             margin-bottom: 30px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            gap: 20px;
         }
 
-        .avatar-circle {
-            width: 125px;
-            height: 125px;
+        .disc-anim {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            margin: 0 auto 20px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden;
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
-        }
-        .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
-
-        .username {
-            font-size: 36px;
-            font-weight: 700;
-            letter-spacing: -1px;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            background: conic-gradient(#333, #fff, #333);
+            animation: spin 3s linear infinite;
         }
 
-        .view-badge {
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        .view-counter {
             position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 11px;
-            color: rgba(255,255,255,0.4);
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            top: 25px;
+            right: 30px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.2);
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        #playBtn {
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
+        .social-btn {
+            font-size: 20px;
+            color: rgba(255,255,255,0.4);
+            transition: 0.3s;
         }
-        #playBtn:hover { transform: scale(1.1); }
+
+        .social-btn:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #fff;
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="rain" id="rainContainer"></div>
-
-    <div class="profile-card">
-        <div class="view-badge">
-            <i class="fa-regular fa-eye"></i> <span id="count">0</span>
-        </div>
-
-        <div class="music-player">
-            <i class="fa-solid fa-compact-disc text-white animate-spin-slow"></i>
-            <div class="text-left flex-1">
-                <div class="text-[9px] text-gray-500 uppercase tracking-widest">Now Playing</div>
-                <div class="text-[12px] font-bold">Inna - Amazing</div>
-            </div>
-            <button onclick="toggleAudio()" id="playBtn">
-                <i class="fa-solid fa-pause" id="playIcon"></i>
-            </button>
-        </div>
-
-        <div class="avatar-circle">
-            <img src="https://cdn.discordapp.com/avatars/1305977261454917703/5d680e3ff33e58ef19d6dfd1041119c8.webp?size=1024" alt="linux">
-        </div>
-
-        <h1 class="username">linux</h1>
-        
-        <div class="profile-badges">
-            <div class="profile-badge"><img src="https://client-gold-nu-77.vercel.app/owner.svg" title="Owner"></div>
-            <div class="profile-badge"><img src="https://client-gold-nu-77.vercel.app/staff.svg" title="Staff"></div>
-            <div class="profile-badge"><img src="https://client-gold-nu-77.vercel.app/verified.svg" title="Verified"></div>
-            <div class="profile-badge"><img src="https://client-gold-nu-77.vercel.app/premium.svg" title="Premium"></div>
-            <div class="profile-badge"><img src="https://client-gold-nu-77.vercel.app/booster.svg" title="Booster"></div>
-        </div>
-
-        <p class="text-[13px] text-gray-400 mt-6 italic opacity-80">"code is my religion."</p>
-
-        <div class="flex justify-center gap-6 mt-8">
-            <a href="#" class="text-gray-500 hover:text-white transition text-2xl"><i class="fab fa-discord"></i></a>
-            <a href="#" class="text-gray-500 hover:text-white transition text-2xl"><i class="fab fa-github"></i></a>
-            <a href="#" class="text-gray-500 hover:text-white transition text-2xl"><i class="fab fa-instagram"></i></a>
+    <div id="entry-overlay" onclick="unlock()">
+        <div class="click-to-enter text-center">
+            <i class="fa-solid fa-shield-halved mb-4 block text-3xl"></i>
+            [ click to access ]
         </div>
     </div>
 
-    <audio id="myAudio" src="https://client-gold-nu-77.vercel.app/inna-amazing.mp3" loop autoplay></audio>
+    <div id="canvas-container"></div>
+
+    <div class="main-wrapper" id="content">
+        <div class="glass-card">
+            <div class="view-counter">
+                Views: <span id="count-num">0</span>
+            </div>
+
+            <div class="music-widget">
+                <div class="disc-anim"></div>
+                <div class="text-left">
+                    <p class="text-[9px] text-blue-400 font-bold uppercase tracking-[2px]">Currently Playing</p>
+                    <p class="text-sm font-medium">Inna - Amazing</p>
+                </div>
+            </div>
+
+            <div class="avatar-box">
+                <img src="https://cdn.discordapp.com/avatars/1305977261454917703/5d680e3ff33e58ef19d6dfd1041119c8.webp?size=1024" alt="linux">
+            </div>
+
+            <h1 class="username">linux</h1>
+            <p class="text-[11px] text-gray-500 uppercase tracking-[4px] mb-4 underline decoration-blue-500/50">Developer</p>
+
+            <div class="badge-list">
+                <div class="badge-item"><img src="https://client-gold-nu-77.vercel.app/owner.svg" title="Owner"></div>
+                <div class="badge-item"><img src="https://client-gold-nu-77.vercel.app/staff.svg" title="Staff"></div>
+                <div class="badge-item"><img src="https://client-gold-nu-77.vercel.app/verified.svg" title="Verified"></div>
+                <div class="badge-item"><img src="https://client-gold-nu-77.vercel.app/premium.svg" title="Premium"></div>
+                <div class="badge-item"><img src="https://client-gold-nu-77.vercel.app/booster.svg" title="Booster"></div>
+            </div>
+
+            <div class="mt-8 flex justify-center gap-8">
+                <a href="#" class="social-btn"><i class="fa-brands fa-discord"></i></a>
+                <a href="#" class="social-btn"><i class="fa-brands fa-github"></i></a>
+                <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <audio id="bg-audio" src="https://client-gold-nu-77.vercel.app/inna-amazing.mp3" loop></audio>
 
     <script>
-        // Yağmur
-        const rain = document.getElementById('rainContainer');
-        for (let i = 0; i < 60; i++) {
-            const drop = document.createElement('div');
-            drop.className = 'raindrop';
-            drop.style.left = Math.random() * 100 + 'vw';
-            drop.style.animationDuration = (Math.random() * 0.4 + 0.4) + 's';
-            drop.style.animationDelay = Math.random() * 2 + 's';
-            rain.appendChild(drop);
-        }
-
-        // Müzik Kontrol
-        const audio = document.getElementById('myAudio');
-        const playIcon = document.getElementById('playIcon');
-        
-        function toggleAudio() {
-            if (audio.paused) {
-                audio.play();
-                playIcon.className = 'fa-solid fa-pause';
-            } else {
-                audio.pause();
-                playIcon.className = 'fa-solid fa-play';
+        // Detaylı Yağmur Efekti
+        const container = document.getElementById('canvas-container');
+        function createRain() {
+            for(let i=0; i<80; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'raindrop';
+                drop.style.left = Math.random() * 100 + 'vw';
+                drop.style.height = Math.random() * 100 + 50 + 'px';
+                drop.style.top = -Math.random() * 200 + 'px';
+                drop.style.animationDuration = Math.random() * 0.5 + 0.5 + 's';
+                drop.style.opacity = Math.random() * 0.3;
+                container.appendChild(drop);
             }
         }
+        createRain();
 
-        // Ziyaretçi Sayacı
-        let count = localStorage.getItem('v_count') || Math.floor(Math.random() * 500) + 100;
-        count++;
-        localStorage.setItem('v_count', count);
-        document.getElementById('count').innerText = count;
+        // Sayfa Açılış Fonksiyonu
+        function unlock() {
+            const audio = document.getElementById('bg-audio');
+            audio.volume = 0.4;
+            audio.play();
 
-        // Sayfa tıklandığında müziği başlat (Tarayıcı engeli için)
-        document.body.addEventListener('click', () => {
-            if (audio.paused) audio.play();
-        }, { once: true });
+            document.getElementById('entry-overlay').classList.add('fade-out');
+            document.getElementById('content').classList.add('show');
+
+            // Sayaç Başlat (0'dan hızlıca hedef sayıya çıksın veya 0'da kalsın)
+            startCounter();
+        }
+
+        function startCounter() {
+            let target = Math.floor(Math.random() * 1000) + 500;
+            let current = 0;
+            const el = document.getElementById('count-num');
+            
+            const timer = setInterval(() => {
+                if(current >= target) clearInterval(timer);
+                current += Math.ceil((target - current) / 10);
+                el.innerText = current;
+            }, 50);
+        }
+
+        // Sağ Tık Engelleme (rip.tf stili)
+        document.addEventListener('contextmenu', event => event.preventDefault());
     </script>
-
-    <style>
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .animate-spin-slow { animation: spin 4s linear infinite; }
-    </style>
 </body>
 </html>
