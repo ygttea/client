@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud Storage | Upload</title>
+    <title>Profile | @kullaniciadi</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -34,7 +34,7 @@
 
         .drop {
             position: absolute;
-            background: linear-gradient(transparent, rgba(255, 255, 255, 0.2));
+            background: linear-gradient(transparent, rgba(255, 255, 255, 0.1));
             width: 1px;
             height: 60px;
             top: -100px;
@@ -46,64 +46,112 @@
         }
 
         /* Glassmorphism Kart */
-        .main-card {
-            background: rgba(10, 10, 10, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 50px;
-            width: 95%;
-            max-width: 450px;
-            text-align: center;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
-        }
-
-        /* Upload Alanı */
-        .upload-box {
+        .bio-card {
+            background: rgba(10, 10, 10, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 12px;
-            padding: 40px 20px;
-            margin: 25px 0;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 1);
+            position: relative;
         }
 
-        .upload-box:hover {
+        /* Profil Fotoğrafı (PP) */
+        .avatar-container {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 20px;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            object-fit: cover;
+        }
+
+        /* Online Noktası */
+        .status-dot {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 14px;
+            height: 14px;
+            background: #22c55e;
+            border-radius: 50%;
+            border: 2px solid #0a0a0a;
+            box-shadow: 0 0 10px #22c55e;
+        }
+
+        /* Badges */
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .badge {
             background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        .btn-action {
-            background: #fff;
-            color: #000;
-            font-size: 13px;
-            font-weight: 700;
-            padding: 12px 30px;
-            border-radius: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: opacity 0.2s;
-        }
-
-        .btn-action:hover {
-            opacity: 0.8;
-        }
-
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 18px;
-            transition: color 0.2s;
-        }
-
-        .footer-links a:hover {
+        .badge i {
+            font-size: 12px;
             color: #fff;
         }
 
-        .glow {
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        /* Sayaç */
+        .view-count {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .link-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: 0.3s ease;
+            color: #ccc;
+        }
+
+        .link-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            transform: scale(1.02);
+        }
+
+        .username-text {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: -1px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
         }
     </style>
 </head>
@@ -111,66 +159,54 @@
 
     <div class="rain" id="rainLayer"></div>
 
-    <div class="main-card">
-        <h1 class="text-2xl font-bold glow">FILE HOSTING</h1>
-        <p class="text-xs text-gray-500 mt-2 uppercase tracking-widest">Secure Cloud Service</p>
+    <div class="bio-card">
+        <div class="view-count">
+            <i class="fa-regular fa-eye"></i>
+            <span id="counter">0</span>
+        </div>
 
-        <div class="upload-box" id="dropArea">
-            <i class="fa-solid fa-arrow-up-from-bracket text-3xl mb-4 opacity-50"></i>
-            <p class="text-sm text-gray-400">Dosyaları buraya bırakın</p>
-            <input type="file" id="hiddenInput" class="hidden">
-            <div class="mt-6">
-                <button onclick="document.getElementById('hiddenInput').click()" class="btn-action">
-                    Dosya Seç
-                </button>
+        <div class="avatar-container">
+            <img src="https://via.placeholder.com/150" alt="PP" class="avatar">
+            <div class="status-dot"></div>
+        </div>
+        
+        <div class="mb-6">
+            <h1 class="username-text">@kullaniciadi</h1>
+            <div class="badges">
+                <div class="badge" title="Developer"><i class="fa-solid fa-code"></i></div>
+                <div class="badge" title="Verified"><i class="fa-solid fa-check-double text-blue-400"></i></div>
+                <div class="badge" title="Early Supporter"><i class="fa-solid fa-star text-yellow-400"></i></div>
             </div>
         </div>
 
-        <div id="status" class="text-[10px] text-gray-500 uppercase tracking-tighter hidden"></div>
+        <div class="flex flex-col mt-4">
+            <a href="#" class="link-btn"><i class="fa-brands fa-discord"></i> Discord</a>
+            <a href="#" class="link-btn"><i class="fa-brands fa-github"></i> GitHub Repo</a>
+            <a href="#" class="link-btn"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Files</a>
+        </div>
 
-        <div class="footer-links flex justify-center gap-5 mt-10">
-            <a href="#"><i class="fa-brands fa-github"></i></a>
-            <a href="#"><i class="fa-solid fa-code"></i></a>
-            <a href="#"><i class="fa-solid fa-shield-halved"></i></a>
+        <div class="mt-10 text-[9px] text-gray-700 tracking-[4px] uppercase">
+            protected by secure-cloud
         </div>
     </div>
 
     <script>
-        // Yağmur Animasyonu
+        // Yağmur Efekti
         const layer = document.getElementById('rainLayer');
-        for (let i = 0; i < 80; i++) {
+        for (let i = 0; i < 60; i++) {
             const drop = document.createElement('div');
             drop.className = 'drop';
             drop.style.left = Math.random() * 100 + 'vw';
-            drop.style.animationDuration = (Math.random() * 0.4 + 0.4) + 's';
+            drop.style.animationDuration = (Math.random() * 0.6 + 0.4) + 's';
             drop.style.animationDelay = Math.random() * 2 + 's';
             layer.appendChild(drop);
         }
 
-        // Input İşlemleri
-        const input = document.getElementById('hiddenInput');
-        const status = document.getElementById('status');
-
-        input.addEventListener('change', (e) => {
-            if(e.target.files.length > 0) {
-                status.innerHTML = `Hazır: <span class="text-white">${e.target.files[0].name}</span>`;
-                status.classList.remove('hidden');
-            }
-        });
-
-        // Sürükle Bırak
-        const dropArea = document.getElementById('dropArea');
-        ['dragover', 'drop'].forEach(ev => {
-            dropArea.addEventListener(ev, e => e.preventDefault());
-        });
-
-        dropArea.addEventListener('drop', (e) => {
-            const file = e.dataTransfer.files[0];
-            if(file) {
-                status.innerHTML = `Hazır: <span class="text-white">${file.name}</span>`;
-                status.classList.remove('hidden');
-            }
-        });
+        // Basit Ziyaretçi Sayacı (Local Storage)
+        let count = localStorage.getItem('visit_count') || 0;
+        count++;
+        localStorage.setItem('visit_count', count);
+        document.getElementById('counter').innerText = count;
     </script>
 </body>
 </html>
