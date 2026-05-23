@@ -30,7 +30,10 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // Sunucu -> Client (biz gönderiyoruz)
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "Teyyapgui");
+        // Client -> Sunucu (client REGISTER gönderdiğinde Spigot bunu tanısın diye)
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, "Teyyapgui", (channel, player, message) -> {});
         getCommand("guitest").setExecutor(new Gui(this));
         getLogger().info("TeyyapguiPlugin aktif!");
     }
@@ -38,6 +41,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "Teyyapgui");
+        this.getServer().getMessenger().unregisterIncomingPluginChannel(this, "Teyyapgui");
     }
 }
 ```
